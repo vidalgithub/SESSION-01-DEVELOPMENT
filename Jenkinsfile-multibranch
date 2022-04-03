@@ -39,7 +39,7 @@ options {
 
        stage('build images') {
             steps {
-                echo 'Deploying....'
+                echo 'ddddddddddddddDeploying....'
             }
         }
 
