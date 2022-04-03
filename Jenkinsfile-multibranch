@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+options {
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    disableConcurrentBuilds()
+    timeout (time: 30, unit: 'MINUTES')
+    timestamps()
+  }
+   
+    stages {
+        stage('Maven clean validate ') {
+            steps {
+                echo 'Building..'
+            }
+        }
+
+
+        stage('sonarqube ') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+
+
+
+        stage('wait for quality gate') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+
+       stage('build images') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+
+       
+
+      
+
+    }
+
+
+   post {
+ 
+    unstable {
+      slackSend (channel: '#jenkins', color: 'warning', message: "UNSTABLE:  Branch name  <<${env.BRANCH_NAME}>>  Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+
+    failure {
+      slackSend (channel: '#jenkins', color: '#FF0000', message: "FAILURE:  Branch name  <<${env.BRANCH_NAME}>> Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+   
+    cleanup {
+      deleteDir()
+    }
+}
+
+
+
+
+}
