@@ -10,8 +10,15 @@ options {
    
     stages {
         stage('Maven clean validate ') {
+              agent {
+                 docker { image 'maven:3.8.4-openjdk-8' }
+                   }
+
             steps {
-                echo 'Building..'
+                sh '''
+                mvn clean
+                mvn validate
+                '''
             }
         }
 
