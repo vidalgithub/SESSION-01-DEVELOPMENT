@@ -19,7 +19,6 @@ options {
                 mvn clean
                 mvn validate
                 mvn package 
-                tree webapps
                 '''
             }
         }
