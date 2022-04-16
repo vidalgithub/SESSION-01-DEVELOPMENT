@@ -19,6 +19,7 @@ options {
                 mvn clean
                 mvn validate
                 mvn package 
+                ls -l 
                 '''
             }
         }
