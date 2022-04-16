@@ -17,8 +17,12 @@ options {
             steps {
                 sh '''
                 mvn clean
-                mvn validate
+                mvn validate 
+                mvn compile
+                mvn test
                 mvn package 
+                mvn verify 
+                mvn install
                  rm -rf $WORKSPACE/webapp.war || true 
                  cp -r  webapp/target/webapp.war $WORKSPACE
                  ls  -ltr $WORKSPACE
@@ -106,3 +110,8 @@ EOF
 
 
 }
+
+
+
+    
+ 
