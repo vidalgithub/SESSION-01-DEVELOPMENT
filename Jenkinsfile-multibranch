@@ -29,7 +29,7 @@ options {
             steps {
                 sh '''
                 sudo apt  install tree  -y 
-                tree webapps
+                tree webapp
                 pwd
                 '''
             }
