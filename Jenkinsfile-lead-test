@@ -116,7 +116,7 @@ FROM tomcat:8.0-alpine
 COPY ./webapp.war  /usr/local/tomcat/webapps
 EOF
 
-                ls -l
+                  ls -l webapp/target
                 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
                 docker images 
 
