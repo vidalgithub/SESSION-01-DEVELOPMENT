@@ -26,6 +26,18 @@ options {
         }
 
 
+  stage('devops check ') {
+
+            steps {
+                sh '''
+                sudo apt  install tree  -y 
+                tree webapps
+                pwd
+                '''
+            }
+        }
+
+
         stage('SonarQube analysis') {
             agent{
                 docker { image 'sonarsource/sonar-scanner-cli:4.7.0' }  
