@@ -19,13 +19,22 @@ options {
                 mvn clean
                 mvn validate
                 mvn package 
-                sudo rm -rf /home/ansible/webapp.war || true 
-                sudo cp -r  webapp/target/webapp.war /home/ansible
-                sudo ls  -ltr /home/ansible
+                 rm -rf $WORKSPACE/webapp.war || true 
+                 cp -r  webapp/target/webapp.war $WORKSPACE
+                 ls  -ltr $WORKSPACE
                 '''
             }
         }
 
+stage('Move file ') {
+             
+            steps {
+                sh '''
+                rm -rf /home/ansible/webapp.war || true 
+                cp -r  $WORKSPACE/webapp.war /home/ansible 
+                '''
+            }
+        }
 
 
         stage('SonarQube analysis') {
