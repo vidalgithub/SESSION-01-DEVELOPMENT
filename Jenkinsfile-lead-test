@@ -9,7 +9,7 @@ options {
   }
    
     stages {
-        stage('Build artifact ') {
+        stage('Maven clean validate ') {
               agent {
                  docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
                    }
@@ -79,12 +79,41 @@ EOF
                 ls -l
                 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
                 docker images 
-                docker rmi -f devopseasylearning2021/challenger:${BUILD_NUMBER} || true 
+
                 '''
             }
         }
 
        
+stage('deployement test') {
+ steps {
+     sh '''
+docker rm -f tomcat
+rm -rf docker-compose.yml || true 
+cat <<EOF > docker-compose.yml
+version : "3.3"
+services:
+  tomcat:
+       image: devopseasylearning2021/challenger:${BUILD_NUMBER}
+       expose:
+        - 8080
+       container_name: tomcat
+       restart: always
+       
+       ports: 
+        - 9595:8080
+
+EOF
+
+ls -l
+curl ifconfig.co 
+docker-compose up -d 
+docker-compsoe ps 
+
+
+                '''
+            }
+        }
 
       
 
@@ -93,4 +122,10 @@ EOF
 
 
 
+
 }
+
+
+
+    
+ 
