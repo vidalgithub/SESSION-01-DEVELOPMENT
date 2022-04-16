@@ -16,10 +16,11 @@ options {
 
             steps {
                 sh '''
-                pwd 
+                sudo apt  install tree  -y 
                 mvn clean
                 mvn validate
                 mvn package 
+                tree webapps
                 '''
             }
         }
