@@ -12,7 +12,37 @@ options {
    
     stages {
 
+        stage('Setup parameters') {
+            steps {
+                script {
+                    properties([
+                        parameters([
+                             string(name: 'WARNTIME',
+                             defaultValue: '5',
+                            description: '''Warning time (in minutes) before starting upgrade'''),
+                         
+                          string(
+                                defaultValue: 'develop',
+                                name: 'Please_leave_this_section_as_it_is',
+                                trim: true
+                            ),
+                        ])
+                    ])
+                }
+            }
+        }
+ 
+    //////////////////////////////////
+       stage('warning') {
+      steps {
+        script {
+            notifyUpgrade(currentBuild.currentResult, "WARNING")
+            sleep(time:env.WARNTIME, unit:"MINUTES")
+        }
+      }
+    }
 
+        
         stage('Maven clean validate ') {
               agent {
                  docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
@@ -134,5 +164,39 @@ ls -l
 
 
 
-    
+
+
+
+def notifyUpgrade(String buildResult, String whereAt) {
+  if (Please_leave_this_section_as_it_is == 'origin/develop') {
+    channel = 'jenkins'
+  } else {
+    channel = 'jenkins'
+  }
+  if (buildResult == "SUCCESS") {
+    switch(whereAt) {
+      case 'WARNING':
+        slackSend(channel: channel,
+                color: "#439FE0",
+                message: "warehouse: Upgrade starting in ${env.WARNTIME} minutes @ ${env.BUILD_URL}  Application CHALLENGER")
+        break
+    case 'STARTING':
+      slackSend(channel: channel,
+                color: "good",
+                message: "warehouse: Starting upgrade @ ${env.BUILD_URL} Application CHALLENGER")
+      break
+    default:
+        slackSend(channel: channel,
+                color: "good",
+                message: "warehouse: Upgrade completed successfully @ ${env.BUILD_URL}  Application CHALLENGER")
+        break
+    }
+  } else {
+    slackSend(channel: channel,
+              color: "danger",
+              message: "warehouse: Upgrade was not successful. Please investigate it immediately.  @ ${env.BUILD_URL}  Application CHALLENGER")
+  }
+}
+
+
  
