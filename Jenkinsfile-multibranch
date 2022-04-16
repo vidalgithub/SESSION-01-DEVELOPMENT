@@ -32,7 +32,7 @@ options {
                 tree webapp
                 pwd
                 ls -l
-                ls-l webapp
+                ls -l webapp
                 '''
             }
         }
