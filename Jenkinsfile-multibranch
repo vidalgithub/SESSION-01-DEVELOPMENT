@@ -20,25 +20,12 @@ options {
                 mvn validate
                 mvn package 
                 rm -rf webapp.war || true 
-                cp -r  webapp/target/webapp.war $WORKSPACE
-                ls $WORKSPACE
+                cp -r  webapp/target/webapp.war /home/ansible
+                ls  -ltr /home/ansible
                 '''
             }
         }
 
-
-  stage('devops check ') {
-
-            steps {
-                sh '''
-                sudo apt  install tree  -y 
-                tree webapp
-                pwd
-                ls -l
-                ls -l webapp
-                '''
-            }
-        }
 
 
         stage('SonarQube analysis') {
