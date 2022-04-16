@@ -1,0 +1,96 @@
+pipeline {
+agent any
+
+options {
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    disableConcurrentBuilds()
+    timeout (time: 30, unit: 'MINUTES')
+    timestamps()
+  }
+   
+    stages {
+        stage('Build artifact ') {
+              agent {
+                 docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
+                   }
+
+            steps {
+                sh '''
+                mvn clean
+                mvn validate 
+                mvn compile
+                mvn test
+                mvn package 
+                mvn verify 
+                mvn install
+                 rm -rf $WORKSPACE/webapp.war || true 
+                 cp -r  webapp/target/webapp.war $WORKSPACE
+                 ls  -ltr $WORKSPACE
+                '''
+            }
+        }
+
+stage('Move file ') {
+             
+            steps {
+                sh '''
+                rm -rf /home/ansible/webapp.war || true 
+                cp -r  /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2/webapp.war /home/ansible 
+                '''
+            }
+        }
+
+
+        stage('SonarQube analysis') {
+            agent{
+                docker { image 'sonarsource/sonar-scanner-cli:4.7.0' }  
+                }
+               environment {
+        CI = 'true'
+        //  scannerHome = tool 'Sonar'
+        scannerHome='/opt/sonar-scanner'
+    }
+            steps{
+                withSonarQubeEnv('Sonar') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+
+
+        stage("Quality Gate"){
+
+         steps {
+                waitForQualityGate abortPipeline: true
+            }
+      }
+      
+      
+       stage('build images') {
+            steps {
+                sh '''
+cd /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
+rm -rf Dockerfile || true 
+cat <<EOF > Dockerfile
+FROM tomcat:8.0-alpine
+COPY ./webapp.war  /usr/local/tomcat/webapps
+EOF
+
+                ls -l
+                docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
+                docker images 
+                docker rmi -f devopseasylearning2021/challenger:${BUILD_NUMBER} || true 
+                '''
+            }
+        }
+
+       
+
+      
+
+    }
+
+
+
+
+}
