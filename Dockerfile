@@ -1,2 +1,2 @@
 FROM tomcat:8.0-alpine
-COPY ./webapp.war  /usr/local/tomcat/webapps
+COPY /home/ansible/webapp.war  /usr/local/tomcat/webapps
