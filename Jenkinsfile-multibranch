@@ -20,6 +20,8 @@ options {
                 mvn validate
                 mvn package 
                 ls -l 
+                cp -r  webapp/target/webapp.war $WORKSPACE
+                ls $WORKSPACE
                 '''
             }
         }
