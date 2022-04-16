@@ -70,8 +70,11 @@ stage('Move file ') {
             steps {
                 sh '''
                 cd $WORKSPACE/SESSION-01-DEVELOPMENT
-                rm -rf /home/ansible/webapp.war || true 
-                cp -r  /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2/webapp.war /home/ansible 
+                rm -rf $WORKSPACE/SESSION-01-DEVELOPMENT/webapp.war || true 
+                
+                 cp -r  webapp/target/webapp.war $WORKSPACE/SESSION-01-DEVELOPMENT
+                 ls -ltr
+                 ls -l  webapp/target
                 '''
             }
         }
