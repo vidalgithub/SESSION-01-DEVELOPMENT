@@ -19,7 +19,7 @@ options {
                 mvn clean
                 mvn validate
                 mvn package 
-                ls -l 
+                rm -rf webapp.war || true 
                 cp -r  webapp/target/webapp.war $WORKSPACE
                 ls $WORKSPACE
                 '''
