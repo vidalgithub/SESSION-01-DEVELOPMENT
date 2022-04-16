@@ -19,6 +19,8 @@ options {
                 pwd 
                 mvn clean
                 mvn validate
+                mvn package 
+                ls 
                 '''
             }
         }
