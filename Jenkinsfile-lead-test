@@ -47,7 +47,7 @@ options {
                 git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
                 ls 
                 pwd
-                cd $WORKSPACE/SESSION-01-DEVELOPMENT
+                mv SESSION-01-DEVELOPMENT/* .
                 '''
             }
         }
@@ -69,8 +69,8 @@ options {
                 mvn verify 
                 mvn install
                  rm -rf $WORKSPACE/webapp.war || true 
-                 cp -r  webapp/target/webapp.war $WORKSPACE/SESSION-01-DEVELOPMENT
-                 ls  -ltr $WORKSPACE/SESSION-01-DEVELOPMENT
+                 cp -r  webapp/target/webapp.war $WORKSPACE
+                 ls  -ltr $WORKSPACE
                 '''
             }
         }
@@ -79,10 +79,10 @@ stage('Move file ') {
              
             steps {
                 sh '''
-                cd $WORKSPACE/SESSION-01-DEVELOPMENT
+                mv 
                 rm -rf $WORKSPACE/SESSION-01-DEVELOPMENT/webapp.war || true 
                 
-                 cp -r  webapp/target/webapp.war $WORKSPACE/SESSION-01-DEVELOPMENT
+                 cp -r  webapp/target/webapp.war $WORKSPACE
                  ls -ltr
                  ls -l  webapp/target
                 '''
@@ -119,7 +119,7 @@ stage('Move file ') {
             steps {
                 sh '''
 
-cd $WORKSPACE/SESSION-01-DEVELOPMENT
+
 rm -rf Dockerfile || true 
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
@@ -138,7 +138,7 @@ EOF
 stage('deployement test') {
  steps {
      sh '''
-cd $WORKSPACE/SESSION-01-DEVELOPMENT
+
 docker rm -f $ServiceName
 rm -rf docker-compose.yml || true 
 cat <<EOF > docker-compose.yml
