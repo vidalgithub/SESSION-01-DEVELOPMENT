@@ -50,7 +50,7 @@ options {
 
             steps {
                 sh '''
-                cd $WORKSPACE/SESSION-01-DEVELOPMENT
+                cd $WORKSPACE/
                 mvn clean
                 mvn validate 
                 mvn compile
