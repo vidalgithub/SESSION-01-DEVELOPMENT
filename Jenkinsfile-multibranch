@@ -31,6 +31,8 @@ options {
                 sudo apt  install tree  -y 
                 tree webapp
                 pwd
+                ls -l
+                ls-l webapp
                 '''
             }
         }
