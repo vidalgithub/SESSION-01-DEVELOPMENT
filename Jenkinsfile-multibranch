@@ -1,6 +1,5 @@
-FROM tomcat:8.0-alpine
-COPY webapp/target/webapp.war  /usr/local/tomcat/webappspipeline {
-    agent any
+pipeline {
+agent any
 
 options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
