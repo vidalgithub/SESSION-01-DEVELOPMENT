@@ -109,14 +109,13 @@ options {
             steps {
                 sh '''
 
-
+cd  ~/home/ansible/home/ansible/workspace/SESSION01/PIPELINE-02/DEVELOPMENT/Branch-deployment-test@2
 rm -rf Dockerfile || true 
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
 COPY ./webapp.war  /usr/local/tomcat/webapps
 EOF
 
-                  ls -l webapp/target
                 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
                 docker images 
 
