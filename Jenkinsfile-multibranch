@@ -1,4 +1,5 @@
-pipeline {
+FROM tomcat:8.0-alpine
+COPY webapp/target/webapp.war  /usr/local/tomcat/webappspipeline {
     agent any
 
 options {
@@ -20,7 +21,6 @@ options {
                 mvn clean
                 mvn validate
                 mvn package 
-                ls 
                 '''
             }
         }
@@ -53,7 +53,12 @@ options {
       
        stage('build images') {
             steps {
-                echo 'Deploying....'
+                sh '''
+                
+                docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
+                docker images 
+                docker rmi -f devopseasylearning2021/challenger:${BUILD_NUMBER} || true 
+                '''
             }
         }
 
