@@ -70,6 +70,7 @@ options {
                 mvn package 
                 mvn verify 
                 mvn install
+                rm -rf $WORKSPACE/webapp.war || true 
                 cp -r webapp/target/webapp.war .
                 ls -l 
                 pwd 
@@ -77,18 +78,6 @@ options {
             }
         }
 
-stage('Move file ') {
-             
-            steps {
-                sh '''
-                mv 
-                rm -rf $WORKSPACE/SESSION-01-DEVELOPMENT/webapp.war || true 
-                
-                 cp -r /home/ansible/home/ansible/home/ansible/workspace/SESSION01/PIPELINE-02/DEVELOPMENT/Branch-deployment-test@2/webapp.war $WORKSPACE
-                 ls -ltr
-                '''
-            }
-        }
 
 
         stage('SonarQube analysis') {
