@@ -59,8 +59,8 @@ options {
                 mvn verify 
                 mvn install
                  rm -rf $WORKSPACE/webapp.war || true 
-                 cp -r  webapp/target/webapp.war $WORKSPACE
-                 ls  -ltr $WORKSPACE
+                 cp -r  webapp/target/webapp.war $WORKSPACE/SESSION-01-DEVELOPMENT
+                 ls  -ltr $WORKSPACE/SESSION-01-DEVELOPMENT
                 '''
             }
         }
