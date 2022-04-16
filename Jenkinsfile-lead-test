@@ -9,6 +9,40 @@ options {
   }
    
     stages {
+
+    stage('Setup parameters') {
+            steps {
+                script { 
+                    properties([
+                        parameters([
+
+                            string(
+                                defaultValue: 'main', 
+                                name: 'branch', 
+                                trim: true
+                            )
+                        ])
+                    ])
+                }
+            }
+        }
+    
+
+    stage('cloning ') {
+             
+            steps {
+                sh '''
+                sudo rm -rf $WORKSPACE/* 
+                git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
+                ls 
+                pwd
+
+                '''
+            }
+        }
+
+
+
         stage('Maven clean validate ') {
               agent {
                  docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
@@ -99,7 +133,7 @@ services:
         - 8080
        container_name: tomcat
        restart: always
-       
+
        ports: 
         - 9595:8080
 
