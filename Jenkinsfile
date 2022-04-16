@@ -157,6 +157,16 @@ ls -l
     }
 
 
+post {
+    always {
+      script {
+        notifyUpgrade(currentBuild.currentResult, "POST")
+      }
+    }
+    cleanup {
+      deleteDir()
+    }
+  }
 
 
 
@@ -178,25 +188,23 @@ def notifyUpgrade(String buildResult, String whereAt) {
       case 'WARNING':
         slackSend(channel: channel,
                 color: "#439FE0",
-                message: "warehouse: Upgrade starting in ${env.WARNTIME} minutes @ ${env.BUILD_URL}  Application CHALLENGER")
+                message: "Challenger: Upgrade starting in ${env.WARNTIME} minutes @ ${env.BUILD_URL}  Application CHALLENGER")
         break
     case 'STARTING':
       slackSend(channel: channel,
                 color: "good",
-                message: "warehouse: Starting upgrade @ ${env.BUILD_URL} Application CHALLENGER")
+                message: "Challenger: Starting upgrade @ ${env.BUILD_URL} Application CHALLENGER")
       break
     default:
         slackSend(channel: channel,
                 color: "good",
-                message: "warehouse: Upgrade completed successfully @ ${env.BUILD_URL}  Application CHALLENGER")
+                message: "Challenger: Upgrade completed successfully @ ${env.BUILD_URL}  Application CHALLENGER")
         break
     }
   } else {
     slackSend(channel: channel,
               color: "danger",
-              message: "warehouse: Upgrade was not successful. Please investigate it immediately.  @ ${env.BUILD_URL}  Application CHALLENGER")
+              message: "Challenger: Upgrade was not successful. Please investigate it immediately.  @ ${env.BUILD_URL}  Application CHALLENGER")
   }
 }
 
-
- 
