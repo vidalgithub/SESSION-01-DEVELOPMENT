@@ -31,7 +31,7 @@ stage('Move file ') {
             steps {
                 sh '''
                 rm -rf /home/ansible/webapp.war || true 
-                cp -r  $WORKSPACE/webapp.war /home/ansible 
+                cp -r  /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2/webapp.war /home/ansible 
                 '''
             }
         }
