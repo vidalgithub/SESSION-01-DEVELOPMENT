@@ -69,7 +69,7 @@ options {
        stage('build images') {
             steps {
                 sh '''
-                
+                ls -l
                 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
                 docker images 
                 docker rmi -f devopseasylearning2021/challenger:${BUILD_NUMBER} || true 
