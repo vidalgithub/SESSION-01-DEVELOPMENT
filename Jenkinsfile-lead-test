@@ -50,7 +50,7 @@ pipeline {
                     sh '''
                     sudo rm -rf $WORKSPACE/* 
                     git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
-                    cd $WORKSPACE/SESSION-01-DEVELOPMENT
+                    cp -r  $WORKSPACE/SESSION-01-DEVELOPMENT/* .
                     '''
                 }
             }
@@ -67,6 +67,7 @@ pipeline {
     
                 steps {
                     sh '''
+                  
                     ls -l webapp/target/
                     rm -rf webapp/target/webapp.war || true 
                     mvn clean
