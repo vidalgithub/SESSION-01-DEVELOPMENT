@@ -10,7 +10,7 @@
 
 <div class="wrapper">
     <div class="title">
-      Registration Form
+      Eric Registration Form
     </div>
     <div class="form">
        <div class="inputfield">
