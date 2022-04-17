@@ -51,6 +51,7 @@ pipeline {
                     sudo rm -rf $WORKSPACE/* 
                     git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
                     cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
+                    rm -rf  $WORKSPACE/SESSION-01-DEVELOPMENT/webapp/target/webapp.war || true 
                     '''
                 }
             }
@@ -70,7 +71,7 @@ pipeline {
                   cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
                     ls -l 
                     pwd
-                    rm -rf webapp/target/webapp.war || true 
+                    rm -rf  $WORKSPACE/SESSION-01-DEVELOPMENT/webapp/target/webapp.war || true 
                     mvn clean
                     mvn validate 
                     mvn compile
@@ -80,7 +81,7 @@ pipeline {
                     mvn install
                     ls -l webapp
                     rm -rf $WORKSPACE/webapp.war || true 
-                    cp -r webapp/target/webapp.war $WORKSPACE
+                    cp -r webapp/target/webapp.war  $WORKSPACE/SESSION-01-DEVELOPMENT/
                     ls -l 
                     pwd 
                     '''
@@ -120,7 +121,7 @@ pipeline {
          sh '''
        cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
 rm -rf Dockerfile || true 
-    
+ 
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
 COPY ./webapp.war  /usr/local/tomcat/webapps
