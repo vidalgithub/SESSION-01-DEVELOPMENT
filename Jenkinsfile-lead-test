@@ -127,8 +127,10 @@ stage('deployement test') {
  steps {
      sh '''
 
-docker rm -f $ServiceName
+docker rm -f $ServiceName || true 
 rm -rf docker-compose.yml || true 
+docker rmi -f devopseasylearning2021/challenger:${BUILD_NUMBER} || true 
+docker-compose down || true 
 cat <<EOF > docker-compose.yml
 version : "3.3"
 services:
@@ -148,6 +150,7 @@ ls -l
 curl ifconfig.co 
 docker-compose up -d 
 docker-compose ps 
+echo "$(curl ifconfig.co):$port/webapp
 
 
                 '''
