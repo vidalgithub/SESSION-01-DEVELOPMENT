@@ -84,13 +84,7 @@ options {
         }
 
 
-        stage("Quality Gate"){
-
-         steps {
-                waitForQualityGate abortPipeline: true
-            }
-      }
-      
+    
       
        stage('build images') {
             steps {
