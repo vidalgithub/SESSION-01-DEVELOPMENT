@@ -14,11 +14,11 @@
     </div>
     <div class="form">
        <div class="inputfield">
-          <label>First Name</label>
+          <label>Eric First Name</label>
           <input type="text" class="input">
        </div>  
         <div class="inputfield">
-          <label>Last Name</label>
+          <label>Eric Last Name</label>
           <input type="text" class="input">
        </div>  
        <div class="inputfield">
