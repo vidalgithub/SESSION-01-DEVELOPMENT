@@ -50,7 +50,7 @@ pipeline {
                     sh '''
                     sudo rm -rf $WORKSPACE/* 
                     git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
-                    cp -r  $WORKSPACE/SESSION-01-DEVELOPMENT/* .
+                    cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
                     '''
                 }
             }
@@ -67,7 +67,7 @@ pipeline {
     
                 steps {
                     sh '''
-                  
+                  cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
                     ls -l 
                     pwd
                     rm -rf webapp/target/webapp.war || true 
@@ -118,7 +118,7 @@ pipeline {
         }
      steps {
          sh '''
-         cd $WORKSPACE
+       cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
 rm -rf Dockerfile || true 
     
 cat <<EOF > Dockerfile
