@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form</title>
+    <title>Eric</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="wrapper">
     <div class="title">
-      Registration Form
+      Eric
     </div>
     <div class="form">
        <div class="inputfield">
@@ -36,6 +36,7 @@
               <option value="">Select</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
+              <option value="eric">Eric</option>
             </select>
           </div>
        </div> 
