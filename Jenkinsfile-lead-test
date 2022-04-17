@@ -78,6 +78,7 @@ pipeline {
                     mvn package 
                     mvn verify 
                     mvn install
+                    ls -l webapp
                     rm -rf $WORKSPACE/webapp.war || true 
                     cp -r webapp/target/webapp.war $WORKSPACE
                     ls -l 
@@ -142,7 +143,9 @@ pipeline {
     docker-compose down || true 
     docker rm -f $ServiceName
     rm -rf docker-compose.yml || true 
-    cat <<EOF > docker-compose.yml
+
+
+cat <<EOF > docker-compose.yml
     version : "3.3"
     services:
       $ServiceName:
@@ -155,7 +158,7 @@ pipeline {
            ports: 
             - $port:8080
     
-    EOF
+EOF
     
     ls -l
     curl ifconfig.co 
