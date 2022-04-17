@@ -47,8 +47,7 @@ options {
                 sh '''
                 sudo rm -rf $WORKSPACE/* 
                 git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
-                ls 
-                pwd
+
                 mv SESSION-01-DEVELOPMENT/* .
                 '''
             }
