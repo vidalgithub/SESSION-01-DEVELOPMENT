@@ -111,27 +111,6 @@ pipeline {
 
 
 
-          
-           stage('build images') {
-               agent { 
-        label 'node1' 
-        }
-                steps {
-                    sh '''
-    cd $WORKSPACE
-    rm -rf Dockerfile || true 
-    cat <<EOF > Dockerfile
-    FROM tomcat:8.0-alpine
-    COPY ./webapp.war  /usr/local/tomcat/webapps
-    EOF
-    
-                    docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
-                    docker images 
-    
-                    '''
-                }
-            }
-    
            
     stage('deployement test') {
         agent { 
@@ -140,6 +119,16 @@ pipeline {
      steps {
          sh '''
          cd $WORKSPACE
+rm -rf Dockerfile || true 
+    
+cat <<EOF > Dockerfile
+FROM tomcat:8.0-alpine
+COPY ./webapp.war  /usr/local/tomcat/webapps
+EOF
+
+docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
+docker images 
+
     docker-compose down || true 
     docker rm -f $ServiceName
     rm -rf docker-compose.yml || true 
