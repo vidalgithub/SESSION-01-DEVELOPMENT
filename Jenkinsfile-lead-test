@@ -68,7 +68,8 @@ pipeline {
                 steps {
                     sh '''
                   
-                    ls -l webapp/target/
+                    ls -l 
+                    pwd
                     rm -rf webapp/target/webapp.war || true 
                     mvn clean
                     mvn validate 
