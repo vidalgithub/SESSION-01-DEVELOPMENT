@@ -1,6 +1,6 @@
 pipeline {
 agent { 
-    label 'node1' 
+    label 'node2' 
     }
 
 options {
@@ -43,11 +43,14 @@ options {
     }
 
         
-        stage('Maven clean validate ') {
+        
+      stage('Maven works') {
               agent {
-                 docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
-                   }
-
+                docker {
+                  label 'node2'  // both label and image
+                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8'
+                }
+              }
             steps {
                 sh '''
                 mvn clean
@@ -68,9 +71,12 @@ options {
 
 
         stage('SonarQube analysis') {
-            agent{
-                docker { image 'sonarsource/sonar-scanner-cli:4.7.0' }  
+            agent {
+                docker {
+                  label 'node2'  // both label and image
+                  image 'sonarsource/sonar-scanner-cli:4.7.0'
                 }
+               }
                environment {
         CI = 'true'
         //  scannerHome = tool 'Sonar'
@@ -87,6 +93,9 @@ options {
     
       
        stage('build images') {
+        agent { 
+    label 'node2' 
+    }
             steps {
                 sh '''
 
@@ -105,6 +114,9 @@ EOF
         }
 
 stage('pushing image to dockerhub') {
+    agent { 
+    label 'node2' 
+    }
  steps {
      sh '''
 
@@ -117,6 +129,9 @@ docker push devopseasylearning2021/challenger:${BUILD_NUMBER}
 
 
 stage('generate compose file ') {
+    agent { 
+    label 'node2' 
+    }
  steps {
      sh '''
 
