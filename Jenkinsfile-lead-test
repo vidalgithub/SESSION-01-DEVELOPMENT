@@ -40,7 +40,9 @@ options {
 
     stage('cloning ') {
      
-             
+             agent { 
+                label 'node1'
+            }
             steps {
                 sh '''
                 sudo rm -rf $WORKSPACE/* 
@@ -56,8 +58,12 @@ options {
 
 
         stage('Maven clean validate ') {
+              agent { 
+                label 'node1'
+            }
+            
               agent {
-                 docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
+                 docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' } 
                    }
 
             steps {
@@ -81,7 +87,7 @@ options {
 
         stage('SonarQube analysis') {
             agent{
-                docker { image 'sonarsource/sonar-scanner-cli:4.7.0' }  
+                docker { image 'sonarsource/sonar-scanner-cli:4.7.0' }   
                 }
                environment {
         CI = 'true'
@@ -99,7 +105,9 @@ options {
       
       
        stage('build images') {
-     
+     agent { 
+                label 'node1'
+            }
             steps {
                 sh '''
 
@@ -120,7 +128,9 @@ EOF
 
        
 stage('deployement test') {
-
+agent { 
+                label 'node1'
+            }
  steps {
      sh '''
 docker-compose down || true 
