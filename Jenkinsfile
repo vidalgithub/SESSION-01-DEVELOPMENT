@@ -18,7 +18,7 @@ options {
                     properties([
                         parameters([
                              string(name: 'WARNTIME',
-                             defaultValue: '5',
+                             defaultValue: '2',
                             description: '''Warning time (in minutes) before starting upgrade'''),
                          
                           string(
@@ -99,7 +99,7 @@ options {
             steps {
                 sh '''
 
-cd  ~/home/ansible/home/ansible/workspace/SESSION01/PIPELINE-02/DEVELOPMENT/Branch-deployment-test@2
+cd  $WORKSPACE
 rm -rf Dockerfile || true 
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
