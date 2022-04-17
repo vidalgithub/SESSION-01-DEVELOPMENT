@@ -1,5 +1,5 @@
 pipeline {
-agent none
+agent any
 options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
     disableConcurrentBuilds()
@@ -39,17 +39,16 @@ options {
     
 
     stage('cloning ') {
-      agent { 
-    label 'node1' 
-    }
-
+     
              
             steps {
                 sh '''
                 sudo rm -rf $WORKSPACE/* 
-                git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
-
+                git clone --branch $branch  https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
+                ls -l
                 mv SESSION-01-DEVELOPMENT/* .
+                sudo rm -rf SESSION-01-DEVELOPMENT
+                ls -l
                 '''
             }
         }
@@ -100,15 +99,13 @@ options {
       
       
        stage('build images') {
-       agent { 
-    label 'node1' 
-    }
-
+     
             steps {
                 sh '''
 
-cd  ~/home/ansible/home/ansible/workspace/SESSION01/PIPELINE-02/DEVELOPMENT/Branch-deployment-test@2
+cd  $WORKSPACE
 rm -rf Dockerfile || true 
+ls -l
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
 COPY ./webapp.war  /usr/local/tomcat/webapps
@@ -123,9 +120,6 @@ EOF
 
        
 stage('deployement test') {
-agent { 
-    label 'node1' 
-    }
 
  steps {
      sh '''
