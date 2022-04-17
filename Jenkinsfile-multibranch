@@ -63,7 +63,7 @@ stage('Move file ') {
        stage('build images') {
             steps {
                 sh '''
-cd /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
+cd $WORKSPACE
 rm -rf Dockerfile || true 
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
