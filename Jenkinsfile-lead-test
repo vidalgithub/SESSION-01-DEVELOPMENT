@@ -1,8 +1,5 @@
 pipeline {
-agent { 
-    label 'node1' 
-    }
-
+agent none
 options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
     disableConcurrentBuilds()
@@ -42,6 +39,10 @@ options {
     
 
     stage('cloning ') {
+      agent { 
+    label 'node1' 
+    }
+
              
             steps {
                 sh '''
@@ -99,6 +100,10 @@ options {
       
       
        stage('build images') {
+       agent { 
+    label 'node1' 
+    }
+
             steps {
                 sh '''
 
