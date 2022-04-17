@@ -143,7 +143,7 @@ ls -l
 curl ifconfig.co 
 docker-compose up -d 
 docker-compose ps 
-echo "$(curl ifconfig.co):$port/webapp
+echo "$(curl ifconfig.co):$port/webapp"
 
 
                 '''
