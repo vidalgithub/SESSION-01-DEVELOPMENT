@@ -79,7 +79,7 @@ pipeline {
                     mvn verify 
                     mvn install
                     rm -rf $WORKSPACE/webapp.war || true 
-                    cp -r webapp/target/webapp.war .
+                    cp -r webapp/target/webapp.war $WORKSPACE
                     ls -l 
                     pwd 
                     '''
@@ -117,7 +117,7 @@ pipeline {
         }
                 steps {
                     sh '''
-    
+    cd $WORKSPACE
     rm -rf Dockerfile || true 
     cat <<EOF > Dockerfile
     FROM tomcat:8.0-alpine
@@ -138,6 +138,7 @@ pipeline {
         }
      steps {
          sh '''
+         cd $WORKSPACE
     docker-compose down || true 
     docker rm -f $ServiceName
     rm -rf docker-compose.yml || true 
