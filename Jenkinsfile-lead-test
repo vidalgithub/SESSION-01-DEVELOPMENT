@@ -123,6 +123,10 @@ EOF
 
        
 stage('deployement test') {
+agent { 
+    label 'node1' 
+    }
+
  steps {
      sh '''
 docker-compose down || true 
