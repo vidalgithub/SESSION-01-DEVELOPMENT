@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eric</title>
+    <title>Eric Kemvou</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="wrapper">
     <div class="title">
-      Eric
+      Eric Kemvou
     </div>
     <div class="form">
        <div class="inputfield">
