@@ -127,6 +127,7 @@ FROM tomcat:8.0-alpine
 COPY ./webapp.war  /usr/local/tomcat/webapps
 EOF
 
+docker rmi -f $(docker images -aq) || true
 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
 docker images 
 
@@ -150,7 +151,7 @@ cat <<EOF > docker-compose.yml
     
 EOF
     
-    docker rmi -f $(docker images -aq) || true
+
     curl ifconfig.co 
     docker-compose up -d 
     docker-compose ps 
