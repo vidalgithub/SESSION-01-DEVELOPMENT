@@ -1,4 +1,6 @@
 FROM tomcat:8.0-alpine
 COPY /home/ansible/webapp.war  /usr/local/tomcat/webapps
-ENV var=key1
-ENV Eric=prof2
+ENV DEVOPS=money
+ENV MONEY=DEVOPS_AWS_LINUX
+RUN mkdir /volumes
+VOLUME /volume
