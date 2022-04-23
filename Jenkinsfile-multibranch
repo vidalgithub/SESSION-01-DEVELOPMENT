@@ -23,9 +23,10 @@ options {
                 mvn package 
                 mvn verify 
                 mvn install
-                 rm -rf /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2/webapp.war || true 
-                 cp -r  webapp/target/webapp.war /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
-                 ls  -ltr /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
+                rm -rf /home/ansible/webapp.war || true 
+                cp -r  webapp/target/webapp.war .
+             
+                ls  -ltr 
                 '''
             }
         }
@@ -38,7 +39,6 @@ options {
                 }
                environment {
         CI = 'true'
-        //  scannerHome = tool 'Sonar'
         scannerHome='/opt/sonar-scanner'
     }
             steps{
@@ -54,8 +54,11 @@ options {
        stage('build images') {
             steps {
                 sh '''
-cd /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
+                echo $BRANCH_NAME
+
+cd /home/ansible/workspace/ELOPMENT_multibranch-build_${BRANCH_NAME}@2
 rm -rf Dockerfile || true 
+
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
 COPY ./webapp.war  /usr/local/tomcat/webapps
