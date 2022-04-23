@@ -1,6 +1,6 @@
 pipeline {
 agent { 
-    label 'node2' 
+    label 'deploy-main' 
     }
 
 options {
