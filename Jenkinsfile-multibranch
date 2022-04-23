@@ -8,7 +8,24 @@ options {
     timestamps()
   }
    
+
+   
+        
+
     stages {
+
+      stage('setting up ') {
+
+            steps {
+                sh '''
+               sudo rm -rf SESSION-01-DEVELOPMENT || true
+               git clone -b $BRANCH_NAME  https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
+               cd SESSION-01-DEVELOPMENT
+                '''
+            }
+        }
+
+        
         stage('Build artifact ') {
               agent {
                  docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
@@ -17,13 +34,9 @@ options {
             steps {
                 sh '''
                 mvn clean
-                mvn validate 
-                mvn compile
-                mvn test
-                mvn package 
-                mvn verify 
-                mvn install
                 rm -rf /home/ansible/webapp.war || true 
+                ls -l
+                mvn package 
                 cp -r  webapp/target/webapp.war .
              
                 ls  -ltr 
@@ -56,7 +69,10 @@ options {
                 sh '''
                 echo $BRANCH_NAME
 
-cd /home/ansible/workspace/ELOPMENT_multibranch-build_${BRANCH_NAME}@2
+DIR=`mktemp -d`
+cd $DIR
+A=`find /home/ansible/workspace/  -type f -iname webapp.war | grep $BRANCH_NAME |  head -1`
+cp -r $A .
 rm -rf Dockerfile || true 
 
 cat <<EOF > Dockerfile
@@ -68,6 +84,7 @@ EOF
                 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
                 docker images 
                 docker rmi -f devopseasylearning2021/challenger:${BUILD_NUMBER} || true 
+rm -rf $DIR
                 '''
             }
         }
