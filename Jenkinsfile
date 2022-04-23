@@ -48,6 +48,8 @@ options {
             }
         }
  
+      
+      
     //////////////////////////////////
        stage('warning') {
       steps {
@@ -175,7 +177,20 @@ EOF
 
 
 
-
+stage('Stage') {
+            steps {
+                setBuildStatus("Compiling", "compile", "pending");
+                script {
+                    try {
+                        // do the build here
+                        setBuildStatus("Build complete", "compile", "success");
+                    } catch (err) {
+                        setBuildStatus("Failed", "pl-compile", "failure");
+                        throw err
+                    }
+                }
+            }
+        }
 
 
 
