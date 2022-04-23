@@ -52,6 +52,19 @@ pipeline {
                     git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
                     cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
                     rm -rf  $WORKSPACE/SESSION-01-DEVELOPMENT/webapp/target/webapp.war || true 
+                    
+cat <<EOF > sonar-project.properties
+#sonar.login=admin
+#sonar.password=admin
+sonar.host.url=https://sonarqube.ektechsoftwaresolution.com/
+sonar.projectKey=maven-project-branch-test
+sonar.projectName=maven-project-branch-test
+sonar.projectVersion=1.0
+sonar.sources=.
+sonar.language=java
+sonar.java.binaries=.
+EOF
+
                     '''
                 }
             }
