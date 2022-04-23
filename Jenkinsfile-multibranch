@@ -1,5 +1,7 @@
 pipeline {
-agent any
+agent { 
+    label 'node3' 
+    }
 
 options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
@@ -7,7 +9,6 @@ options {
     timeout (time: 30, unit: 'MINUTES')
     timestamps()
   }
-   
 
    
         
@@ -15,6 +16,9 @@ options {
     stages {
 
       stage('setting up ') {
+      agent { 
+    label 'node3' 
+    }
 
             steps {
                 sh '''
@@ -27,6 +31,7 @@ options {
 
         
         stage('Build artifact ') {
+        
               agent {
                  docker { image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8' }
                    }
@@ -65,6 +70,9 @@ options {
     
       
        stage('build images') {
+       agent { 
+    label 'node3' 
+    }
             steps {
                 sh '''
                 echo $BRANCH_NAME
