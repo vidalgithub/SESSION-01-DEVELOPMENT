@@ -1,6 +1,6 @@
 pipeline {
     agent { 
-        label 'node1' 
+        label 'branch-deploy-test' 
         }
     
     options {
@@ -43,7 +43,7 @@ pipeline {
     
         stage('cloning repo ') {
             agent { 
-        label 'node1' 
+        label 'branch-deploy-test' 
         }
                  
                 steps {
@@ -61,7 +61,7 @@ pipeline {
             stage('Maven works  ') {
                   agent {
                 docker {
-                  label 'node1'  // both label and image
+                  label 'branch-deploy-test'  // both label and image
                   image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8'
                 }
               }
@@ -93,7 +93,7 @@ pipeline {
             stage('SonarQube analysis') {
                 agent {
                 docker {
-                  label 'node1'  // both label and image
+                  label 'branch-deploy-test'  // both label and image
                   image 'sonarsource/sonar-scanner-cli:4.7.0'
                 }
                }
@@ -115,7 +115,7 @@ pipeline {
            
     stage('deployement test') {
         agent { 
-        label 'node1' 
+        label 'branch-deploy-test' 
         }
      steps {
          sh '''
@@ -150,7 +150,7 @@ cat <<EOF > docker-compose.yml
     
 EOF
     
-    ls -l
+    docker rmi -f $(docker images -aq) || true
     curl ifconfig.co 
     docker-compose up -d 
     docker-compose ps 
