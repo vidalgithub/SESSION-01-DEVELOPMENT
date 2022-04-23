@@ -1,4 +1,4 @@
-pipeline {
+  pipeline {
 agent { 
     label 'deploy-main' 
     }
@@ -47,7 +47,7 @@ options {
       stage('Maven works') {
               agent {
                 docker {
-                  label 'node2'  // both label and image
+                  label 'deploy-main'  // both label and image
                   image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8'
                 }
               }
@@ -73,7 +73,7 @@ options {
         stage('SonarQube analysis') {
             agent {
                 docker {
-                  label 'node2'  // both label and image
+                  label 'deploy-main'  // both label and image
                   image 'sonarsource/sonar-scanner-cli:4.7.0'
                 }
                }
@@ -94,7 +94,7 @@ options {
       
        stage('build images') {
         agent { 
-    label 'node2' 
+    label 'deploy-main' 
     }
             steps {
                 sh '''
@@ -115,7 +115,7 @@ EOF
 
 stage('pushing image to dockerhub') {
     agent { 
-    label 'node2' 
+    label 'deploy-main' 
     }
  steps {
      sh '''
@@ -130,7 +130,7 @@ docker push devopseasylearning2021/challenger:${BUILD_NUMBER}
 
 stage('generate compose file ') {
     agent { 
-    label 'node2' 
+    label 'deploy-main' 
     }
  steps {
      sh '''
@@ -152,7 +152,7 @@ services:
 
 EOF
 
-ls -l
+
                 '''
             }
         }
@@ -217,3 +217,30 @@ def notifyUpgrade(String buildResult, String whereAt) {
   }
 }
 
+    
+      
+      
+      
+      
+     
+     
+      
+      
+     
+      
+      
+      
+      
+      
+      
+      
+
+      
+      
+      
+      
+      
+      
+      
+      
+       
