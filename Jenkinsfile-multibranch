@@ -23,22 +23,13 @@ options {
                 mvn package 
                 mvn verify 
                 mvn install
-                 rm -rf $WORKSPACE/webapp.war || true 
-                 cp -r  webapp/target/webapp.war $WORKSPACE
-                 ls  -ltr $WORKSPACE
+                 rm -rf /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2/webapp.war || true 
+                 cp -r  webapp/target/webapp.war /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
+                 ls  -ltr /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
                 '''
             }
         }
 
-stage('Move file ') {
-             
-            steps {
-                sh '''
-                rm -rf /home/ansible/webapp.war || true 
-                cp -r  /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2/webapp.war /home/ansible 
-                '''
-            }
-        }
 
 
         stage('SonarQube analysis') {
@@ -63,7 +54,7 @@ stage('Move file ') {
        stage('build images') {
             steps {
                 sh '''
-cd $WORKSPACE
+cd /home/ansible/home/ansible/home/ansible/workspace/VELOPMENT_multibranch-build_main@2
 rm -rf Dockerfile || true 
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
