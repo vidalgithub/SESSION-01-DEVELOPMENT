@@ -135,24 +135,7 @@ docker push devopseasylearning2021/challenger:${BUILD_NUMBER}
 
 
 
-stage('ansible-lint-check') {
-              agent {
-                docker {
-                  label 'deploy-main'  // both label and image
-                  image 'devopseasylearning2021/ansible-lint:001'
-                }
-              }
-            steps {
-                sh '''
-              helm template -s templates/deployment.yaml .  > file1.yaml
-              helm template -s templates/hpa.yaml .  > file2.yaml
-              helm template -s templates/service.yaml .  > file4.yaml
-              helm template -s templates/serviceaccount.yaml .  > file5.yaml
-              ansible-lint *.yaml
-              rm -rf file* 
-                '''
-            }
-        }
+
 
 
 
@@ -195,6 +178,25 @@ git push
 
 
 
+stage('ansible-lint-check') {
+              agent {
+                docker {
+                  label 'deploy-main'  // both label and image
+                  image 'devopseasylearning2021/ansible-lint:001'
+                }
+              }
+            steps {
+                sh '''
+            cd SESSION01-PROJECT02-CHARTS/
+              helm template -s templates/deployment.yaml .  > file1.yaml
+              helm template -s templates/hpa.yaml .  > file2.yaml
+              helm template -s templates/service.yaml .  > file4.yaml
+              helm template -s templates/serviceaccount.yaml .  > file5.yaml
+              ansible-lint *.yaml
+              rm -rf file* 
+                '''
+            }
+        }
 
 
 
