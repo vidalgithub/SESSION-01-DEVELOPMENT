@@ -187,7 +187,7 @@ stage('ansible-lint-check') {
               }
             steps {
                 sh '''
-            cd SESSION01-PROJECT02-CHARTS/
+            cd SESSION01-PROJECT02-CHARTS/pipeline02-dev
               helm template -s templates/deployment.yaml .  > file1.yaml
               helm template -s templates/hpa.yaml .  > file2.yaml
               helm template -s templates/service.yaml .  > file4.yaml
