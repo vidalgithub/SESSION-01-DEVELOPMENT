@@ -141,7 +141,7 @@ stage('Update helm-charts') {
      sh '''
 rm -rf SESSION01-PROJECT02-CHARTS || true 
 git clone git@github.com:devopseasylearning/SESSION01-PROJECT02-CHARTS.git
-cd SESSION01-PROJECT02-CHARTS
+cd SESSION01-PROJECT02-CHARTS/pipeline02-dev
 git pull --all 
 
 cat <<EOF > values-dev.yaml
