@@ -159,6 +159,8 @@ cat values-dev.yaml
 git status 
 
 git add -A
+git config --global user.email "info@devopseasylearning.com"
+git config --global user.name "ansible"
 git commit -m "Update from jenkins on build ${BUILD_NUMBER}"
 git push 
 
