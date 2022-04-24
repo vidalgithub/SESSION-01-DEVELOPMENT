@@ -111,7 +111,7 @@
         </div>
       </div>
       <footer>
-        Made by Devops Easy Learning | <a href="https://github.com/liyasthomas/parkinglot">GitHub</a>
+        Made by Devops Easy Learning | <a href="https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT">GitHub</a>
       </footer>
     </div>
   </div>
