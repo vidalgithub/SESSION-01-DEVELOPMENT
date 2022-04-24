@@ -1,4 +1,4 @@
-FROM node:alpine
+-set-upstream origin serge-loveFROM node:alpine
 
 ADD package.json /app/
 
@@ -10,4 +10,4 @@ ADD hello.js /app/
 
 CMD npm start
 
-
+EXPOSE 3000

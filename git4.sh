@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:5.12
 
 ADD package.json /app/
 
