@@ -1,253 +1,191 @@
-
-
-
 pipeline {
-agent { 
-    label 'deploy-main' 
-    }
-
-options {
-    buildDiscarder(logRotator(numToKeepStr: '20'))
-    disableConcurrentBuilds()
-    timeout (time: 30, unit: 'MINUTES')
-    timestamps()
-  }
-   
-    stages {
-
+    agent { 
+        label 'branch-deploy-test' 
+        }
+    
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+        disableConcurrentBuilds()
+        timeout (time: 30, unit: 'MINUTES')
+        timestamps()
+      }
+       
+        stages {
+    
         stage('Setup parameters') {
-            steps {
-                script {
-                    properties([
-                        parameters([
-                             string(name: 'WARNTIME',
-                             defaultValue: '2',
-                            description: '''Warning time (in minutes) before starting upgrade'''),
-                         
-                          string(
-                                defaultValue: 'develop',
-                                name: 'Please_leave_this_section_as_it_is',
-                                trim: true
-                            ),
+                steps {
+                    script { 
+                        properties([
+                            parameters([
+    
+                                string(
+                                    defaultValue: 'main', 
+                                    name: 'branch', 
+                                    trim: true
+                                ),
+    
+                                string(
+                                    defaultValue: 'tomcat', 
+                                    name: 'ServiceName', 
+                                    trim: true
+                                ),
+    
+                                choice(
+                                    choices: ['9090', '9091','9092', '9093','5050', '5051','7070', '7071'], 
+                                    name: 'port'
+                                ),
+                            ])
                         ])
-                    ])
+                    }
                 }
             }
+        
+    
+        stage('cloning repo ') {
+            agent { 
+        label 'branch-deploy-test' 
         }
- 
-      
-      
-    //////////////////////////////////
-       stage('warning') {
-      steps {
-        script {
-            notifyUpgrade(currentBuild.currentResult, "WARNING")
-            sleep(time:env.WARNTIME, unit:"MINUTES")
-        }
-      }
-    }
+                 
+                steps {
+                    sh '''
+                    sudo rm -rf $WORKSPACE/* 
+                    git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
+                    cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
+                    rm -rf  $WORKSPACE/SESSION-01-DEVELOPMENT/webapp/target/webapp.war || true 
+                    
+cat <<EOF > sonar-project.properties
+#sonar.login=admin
+#sonar.password=admin
+sonar.host.url=https://sonarqube.ektechsoftwaresolution.com/
+sonar.projectKey=maven-project-branch-test
+sonar.projectName=maven-project-branch-test
+sonar.projectVersion=1.0
+sonar.sources=.
+sonar.language=java
+sonar.java.binaries=.
+EOF
 
-        
-        
-      stage('Maven works') {
-              agent {
+                    '''
+                }
+            }
+    
+    
+    
+            stage('Maven works  ') {
+                  agent {
                 docker {
-                  label 'deploy-main'  // both label and image
+                  label 'branch-deploy-test'  // both label and image
                   image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8'
                 }
               }
-            steps {
-                sh '''
-                mvn clean
-                mvn validate 
-                mvn compile
-                mvn test
-                mvn package 
-                mvn verify 
-                mvn install
-                rm -rf $WORKSPACE/webapp.war || true 
-                cp -r webapp/target/webapp.war .
-                ls -l 
-                pwd 
-                '''
+    
+                steps {
+                    sh '''
+                  cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
+                    ls -l 
+                    pwd
+                    rm -rf  $WORKSPACE/SESSION-01-DEVELOPMENT/webapp/target/webapp.war || true 
+                    mvn clean
+                    mvn validate 
+                    mvn compile
+                    mvn test
+                    mvn package 
+                    mvn verify 
+                    mvn install
+                    ls -l webapp
+                    rm -rf $WORKSPACE/webapp.war || true 
+                    cp -r webapp/target/webapp.war  $WORKSPACE/SESSION-01-DEVELOPMENT/
+                    ls -l 
+                    pwd 
+                    '''
+                }
             }
-        }
-
-
-
-        stage('SonarQube analysis') {
-            agent {
+    
+    
+    
+            stage('SonarQube analysis') {
+                agent {
                 docker {
-                  label 'deploy-main'  // both label and image
+                  label 'branch-deploy-test'  // both label and image
                   image 'sonarsource/sonar-scanner-cli:4.7.0'
                 }
                }
-               environment {
-        CI = 'true'
-        //  scannerHome = tool 'Sonar'
-        scannerHome='/opt/sonar-scanner'
-    }
-            steps{
-                withSonarQubeEnv('Sonar') {
-                    sh "${scannerHome}/bin/sonar-scanner"
+                   environment {
+            CI = 'true'
+            //  scannerHome = tool 'Sonar'
+            scannerHome='/opt/sonar-scanner'
+        }
+                steps{
+                    withSonarQubeEnv('Sonar') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
                 }
             }
-        }
-
-
     
-      
-       stage('build images') {
-        agent { 
-    label 'deploy-main' 
-    }
-            steps {
-                sh '''
 
-cd  $WORKSPACE
+
+
+           
+    stage('deployement test') {
+        agent { 
+        label 'branch-deploy-test' 
+        }
+     steps {
+         sh '''
+       cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
 rm -rf Dockerfile || true 
+ 
 cat <<EOF > Dockerfile
 FROM tomcat:8.0-alpine
 COPY ./webapp.war  /usr/local/tomcat/webapps
 EOF
 
-                docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
-                docker images 
+docker rmi -f $(docker images -aq) || true
+docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
+docker images 
 
-                '''
-            }
-        }
-
-stage('pushing image to dockerhub') {
-    agent { 
-    label 'deploy-main' 
-    }
- steps {
-     sh '''
-
-cat /home/ansible/password.txt | docker login --username devopseasylearning2021 --password-stdin
-docker push devopseasylearning2021/challenger:${BUILD_NUMBER}
-
-                '''
-            }
-        }
+    docker-compose down || true 
+    docker rm -f $ServiceName
+    rm -rf docker-compose.yml || true 
 
 
-stage('Update helm-charts') {
-    agent { 
-    label 'deploy-main' 
-    }
- steps {
-     sh '''
-rm -rf SESSION01-PROJECT02-CHARTS || true 
-git clone git@github.com:devopseasylearning/SESSION01-PROJECT02-CHARTS.git
-cd SESSION01-PROJECT02-CHARTS
-git pull --all 
-
-cat <<EOF > values-dev.yaml
-replicaCount: 1
-image:
-  repository: devopseasylearning2021
-  pullPolicy: Always
-  tag: ${BUILD_NUMBER}
-service:
-  type: LoadBalancer
-  port: 80
-EOF
-
-cat values-dev.yaml
-git status 
-
-git add -A
-git commit -m "Update from jenkins on build ${BUILD_NUMBER}"
-git push 
-
-                '''
-            }
-        }
-
-
-
-
-
-
-    }
-
-
- post {
-    always {
-      script {
-        notifyUpgrade(currentBuild.currentResult, "POST")
-      }
-    }
-    cleanup {
-      deleteDir()
-    }
-  }
-
-
-}
-
-
-
-
-
-
-def notifyUpgrade(String buildResult, String whereAt) {
-  if (Please_leave_this_section_as_it_is == 'origin/develop') {
-    channel = 'jenkins'
-  } else {
-    channel = 'jenkins'
-  }
-  if (buildResult == "SUCCESS") {
-    switch(whereAt) {
-      case 'WARNING':
-        slackSend(channel: channel,
-                color: "#439FE0",
-                message: "Challenger: Upgrade starting in ${env.WARNTIME} minutes @ ${env.BUILD_URL}  Application CHALLENGER")
-        break
-    case 'STARTING':
-      slackSend(channel: channel,
-                color: "good",
-                message: "Challenger: Starting upgrade @ ${env.BUILD_URL} Application CHALLENGER")
-      break
-    default:
-        slackSend(channel: channel,
-                color: "good",
-                message: "Challenger: Upgrade completed successfully @ ${env.BUILD_URL}  Application CHALLENGER")
-        break
-    }
-  } else {
-    slackSend(channel: channel,
-              color: "danger",
-              message: "Challenger: Upgrade was not successful. Please investigate it immediately.  @ ${env.BUILD_URL}  Application CHALLENGER")
-  }
-}
-
+cat <<EOF > docker-compose.yml
+    version : "3.3"
+    services:
+      $ServiceName:
+           image: devopseasylearning2021/challenger:${BUILD_NUMBER}
+           expose:
+            - 8080
+           container_name: $ServiceName
+           restart: always
     
-      
-      
-      
-      
-     
-     
-      
-      
-     
-      
-      
-      
-      
-      
-      
-      
+           ports: 
+            - $port:8080
+    
+EOF
+    
 
-      
-      
-      
-      
-      
-      
-      
-      
-       
+    curl ifconfig.co 
+    docker-compose up -d 
+    docker-compose ps 
+    docker images prune -f  || true
+    
+                    '''
+                }
+            }
+    
+          
+    
+        }
+    
+    
+    
+    
+    
+    }
+    
+    
+    
+        
+     
+    
