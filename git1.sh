@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:13.0
 
 ADD package.json /app/
 
@@ -10,4 +10,4 @@ ADD hello.js /app/
 
 CMD npm start
 
-
+EXPOSE 3000
