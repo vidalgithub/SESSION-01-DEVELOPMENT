@@ -1,0 +1,17 @@
+FROM ubuntu:18.04
+LABEL "Company name"="EK Tech Software solution"
+LABEL com.example.label-with-value="+ 1(800) - 641 - 0764"
+RUN mkdir /kapson /lucy /kantin /claude  
+WORKDIR /kantin 
+RUN apt update -y
+RUN apt install vim curl apache2 tree -y
+RUN touch eric tia donald ryan
+COPY lab /kapson 
+RUN  useradd -m -d /home/deploy  deploy
+ENV OS=dert  
+ENV SER=sertt 
+ENV SCF=SD
+ADD https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.75/bin/apache-tomcat-8.5.75.zip /opt 
+EXPOSE 90 95 100 1000 1500 
+VOLUME /volume
+USER deploy
