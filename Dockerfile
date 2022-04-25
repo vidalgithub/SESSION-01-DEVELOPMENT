@@ -7,3 +7,5 @@ ENV p=mg
 My Valdes first shot in github
 
 I love git
+let do it together time is money
+Africa United
