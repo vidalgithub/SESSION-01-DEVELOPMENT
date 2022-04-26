@@ -110,7 +110,7 @@ options {
             steps {
                 sh '''
                 rm -rf SESSION-01-DEVELOPMENT || true 
-                docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 ls -l 
+                docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 bash -c " cp -r /dir/* . ; ls -l ; bash clone.sh"
                 ls -l 
                 
                 cd SESSION-01-DEVELOPMENT 
