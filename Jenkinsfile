@@ -139,7 +139,7 @@ git push
 				sh 'docker push devopseasylearning2021/challenger:${BUILD_NUMBER}'
 			}
 		}
-	}
+	
 
 
 
