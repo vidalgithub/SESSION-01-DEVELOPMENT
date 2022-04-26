@@ -194,9 +194,7 @@ git push
         notifyUpgrade(currentBuild.currentResult, "POST")
       }
     }
-    cleanup {
-      deleteDir()
-    }
+    
   }
 
 
