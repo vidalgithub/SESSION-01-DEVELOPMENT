@@ -72,18 +72,8 @@ options {
                 
              
                 rm -rf SESSION-01-DEVELOPMENT || true
-                git clone git@github.com:devopseasylearning/SESSION-01-DEVELOPMENT.git
-                cd SESSION-01-DEVELOPMENT 
-                git pull --all
-                cp -r ../webapp/target/webapp.war .
-                ls -l
-                git status 
-
-git add -A
-git config --global user.email "info@devopseasylearning.com"
-git config --global user.name "ansible"
-git commit -m "Update from webapp.war on build ${BUILD_NUMBER}"
-git push 
+                cp -r /root/push.sh . || true 
+		bash push.sh 
                 '''
             }
         }
