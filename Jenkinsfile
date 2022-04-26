@@ -2,9 +2,7 @@
 
 
 pipeline {
-agent { 
-    label 'deploy-main' 
-    }
+agent any
 
 options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
@@ -12,6 +10,12 @@ options {
     timeout (time: 30, unit: 'MINUTES')
     timestamps()
   }
+
+  environment {
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+	}
+
+
    
     stages {
 
@@ -52,8 +56,7 @@ options {
       stage('Maven works') {
               agent {
                 docker {
-                  label 'deploy-main'  // both label and image
-                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8'
+                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.1'
                 }
               }
             steps {
@@ -66,9 +69,20 @@ options {
                 mvn verify 
                 mvn install
                 rm -rf $WORKSPACE/webapp.war || true 
-                cp -r webapp/target/webapp.war .
-                ls -l 
-                pwd 
+                
+                rm -rf SESSION-01-DEVELOPMENT || true
+                git clone git@github.com:devopseasylearning/SESSION-01-DEVELOPMENT.git
+                cd SESSION-01-DEVELOPMENT 
+                git pull --all
+                cp -r ../webapp/target/webapp.war .
+                ls -l
+                git status 
+
+git add -A
+git config --global user.email "info@devopseasylearning.com"
+git config --global user.name "ansible"
+git commit -m "Update from webapp.war on build ${BUILD_NUMBER}"
+git push 
                 '''
             }
         }
@@ -78,7 +92,6 @@ options {
         stage('SonarQube analysis') {
             agent {
                 docker {
-                  label 'deploy-main'  // both label and image
                   image 'sonarsource/sonar-scanner-cli:4.7.0'
                 }
                }
@@ -98,19 +111,13 @@ options {
     
       
        stage('build images') {
-        agent { 
-    label 'deploy-main' 
-    }
+
             steps {
                 sh '''
-
-cd  $WORKSPACE
-rm -rf Dockerfile || true 
-cat <<EOF > Dockerfile
-FROM tomcat:8.0-alpine
-COPY ./webapp.war  /usr/local/tomcat/webapps
-EOF
-
+                rm -rf SESSION-01-DEVELOPMENT || true
+                git clone git@github.com:devopseasylearning/SESSION-01-DEVELOPMENT.git
+                cd SESSION-01-DEVELOPMENT 
+                git pull --all
                 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
                 docker images 
 
@@ -118,23 +125,21 @@ EOF
             }
         }
 
-stage('pushing image to dockerhub') {
-    agent { 
-    label 'deploy-main' 
-    }
- steps {
-     sh '''
 
-cat /home/ansible/password.txt | docker login --username devopseasylearning2021 --password-stdin
-docker push devopseasylearning2021/challenger:${BUILD_NUMBER}
+		stage('Login') {
 
-                '''
-            }
-        }
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
 
+		stage('Push') {
 
-
-
+			steps {
+				sh 'docker push devopseasylearning2021/challenger:${BUILD_NUMBER}'
+			}
+		}
+	}
 
 
 
@@ -160,7 +165,7 @@ image:
   tag: ${BUILD_NUMBER}
 service:
   type: LoadBalancer
-  port: 80
+  port: 8080
 EOF
 
 cat values-dev.yaml
