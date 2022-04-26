@@ -56,7 +56,7 @@ options {
       stage('Maven works') {
               agent {
                 docker {
-                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.1'
+                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.2'
                 }
               }
             steps {
