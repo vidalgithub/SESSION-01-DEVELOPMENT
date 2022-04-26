@@ -42,12 +42,12 @@ options {
                 sh '''
                 rm -rf webapp/target/webapp.war || true 
                 mvn clean
-                validate 
-                compile
-                test 
-                package
-                verify 
-                install
+                 mvn validate 
+                 mvn compile
+                 mvn test 
+                 mvn package
+                 mvn verify 
+                 mvn install
 
              
 rm -rf  check.sh || true 
