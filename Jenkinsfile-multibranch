@@ -1,7 +1,5 @@
 pipeline {
-agent { 
-    label 'node3' 
-    }
+agent any
 
 options {
     buildDiscarder(logRotator(numToKeepStr: '20'))
@@ -16,10 +14,7 @@ options {
     stages {
 
       stage('setting up ') {
-      agent { 
-    label 'node3' 
-    }
-
+     
             steps {
                 sh '''
                sudo rm -rf SESSION-01-DEVELOPMENT || true
