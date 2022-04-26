@@ -203,9 +203,9 @@ git push
 
 def notifyUpgrade(String buildResult, String whereAt) {
   if (Please_leave_this_section_as_it_is == 'origin/develop') {
-    channel = 'session2-november-2021'
+    channel = 'development-alerts'
   } else {
-    channel = 'session2-november-2021'
+    channel = 'development-alerts'
   }
   if (buildResult == "SUCCESS") {
     switch(whereAt) {
