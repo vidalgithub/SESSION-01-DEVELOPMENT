@@ -40,13 +40,30 @@ options {
               }
             steps {
                 sh '''
+                rm -rf webapp/target/webapp.war || true 
                 mvn clean
-                rm -rf /home/ansible/webapp.war || true 
-                ls -l
-                mvn package 
-                cp -r  webapp/target/webapp.war .
+                validate 
+                compile
+                test 
+                package
+                verify 
+                install
+
              
-                ls  -ltr 
+rm -rf  check.sh || true 
+cat <<EOF > check.sh
+#!/bin/bash
+cp -r  webapp/target/webapp.war . 
+if 
+[[ $? -ne  0  ]]
+then 
+echo "tar file missing"
+exit 1
+EOF
+
+bash  check.sh
+                
+                
                 '''
             }
         }
@@ -74,34 +91,6 @@ options {
 
 
     
-      
-       stage('build images') {
-       agent { 
-    label 'node3' 
-    }
-            steps {
-                sh '''
-                echo $BRANCH_NAME
-
-DIR=`mktemp -d`
-cd $DIR
-A=`find /home/ansible/workspace/  -type f -iname webapp.war | grep $BRANCH_NAME |  head -1`
-cp -r $A .
-rm -rf Dockerfile || true 
-
-cat <<EOF > Dockerfile
-FROM tomcat:8.0-alpine
-COPY ./webapp.war  /usr/local/tomcat/webapps
-EOF
-
-                ls -l
-                docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
-                docker images 
-                docker rmi -f devopseasylearning2021/challenger:${BUILD_NUMBER} || true 
-rm -rf $DIR
-                '''
-            }
-        }
 
        
 
@@ -113,11 +102,11 @@ rm -rf $DIR
    post {
  
     unstable {
-      slackSend (channel: '#session2-november-2021', color: 'warning', message: "UNSTABLE:  Branch name  <<${env.BRANCH_NAME}>>  Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+      slackSend (channel: '#development-alerts', color: 'warning', message: "UNSTABLE:  Branch name  <<${env.BRANCH_NAME}>>  Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
     }
 
     failure {
-      slackSend (channel: '#session2-november-2021', color: '#FF0000', message: "FAILURE:  Branch name  <<${env.BRANCH_NAME}>> Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+      slackSend (channel: '#development-alerts', color: '#FF0000', message: "FAILURE:  Branch name  <<${env.BRANCH_NAME}>> Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
     }
    
     cleanup {
