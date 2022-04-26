@@ -61,6 +61,7 @@ options {
               }
             steps {
                 sh '''
+		rm -rf $WORKSPACE/webapp.war || true 
                 mvn clean
                 mvn validate 
                 mvn compile
@@ -68,8 +69,8 @@ options {
                 mvn package 
                 mvn verify 
                 mvn install
-                rm -rf $WORKSPACE/webapp.war || true 
                 
+             
                 rm -rf SESSION-01-DEVELOPMENT || true
                 git clone git@github.com:devopseasylearning/SESSION-01-DEVELOPMENT.git
                 cd SESSION-01-DEVELOPMENT 
