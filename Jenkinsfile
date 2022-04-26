@@ -118,7 +118,7 @@ options {
                 ls -l 
                 
                 cd SESSION-01-DEVELOPMENT 
-                cp -r SESSION-01-DEVELOPMENT/webapp.war . 
+               
                 docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
                 docker images 
 
