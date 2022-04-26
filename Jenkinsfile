@@ -57,6 +57,7 @@ options {
               agent {
                 docker {
                   image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.2'
+	          args '-u 0:0'
                 }
               }
             steps {
@@ -72,7 +73,10 @@ options {
                 
              
                 rm -rf SESSION-01-DEVELOPMENT || true
+		id
+		whoami
                 cp -r /root/push.sh . || true 
+		
 		bash push.sh 
                 '''
             }
