@@ -56,7 +56,7 @@ options {
       stage('Maven works') {
               agent {
                 docker {
-                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4'
+                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.5'
 	          args '-u 0:0'
                 }
               }
@@ -110,7 +110,7 @@ options {
             steps {
                 sh '''
                 rm -rf SESSION-01-DEVELOPMENT || true 
-                docker run -i --rm -v $PWD:/root -w /root devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 bash clone.sh 
+                docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 bash /dir/clone.sh 
                 ls -l 
                 
                 cd SESSION-01-DEVELOPMENT 
