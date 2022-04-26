@@ -59,6 +59,7 @@ if
 then 
 echo "tar file missing"
 exit 1
+fi
 EOF
 
 bash  check.sh
