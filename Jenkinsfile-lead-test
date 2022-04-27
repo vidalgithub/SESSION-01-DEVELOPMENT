@@ -38,7 +38,7 @@ pipeline {
                         ])
                     }
                 }
-            }
+           } }
         
     
         stage('cloning repo ') {
