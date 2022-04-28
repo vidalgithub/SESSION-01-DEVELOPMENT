@@ -153,11 +153,6 @@ stage('Update helm-charts') {
     }
  steps {
      sh '''
-rm -rf SESSION01-PROJECT02-CHARTS || true 
-git clone git@github.com:devopseasylearning/SESSION01-PROJECT02-CHARTS.git
-cd SESSION01-PROJECT02-CHARTS/pipeline02-dev
-git pull --all 
-
 cat <<EOF > values-dev.yaml
 replicaCount: 1
 image:
@@ -169,15 +164,10 @@ service:
   port: 8080
 EOF
 
-cat values-dev.yaml
-git status 
 
-git add -A
-git config --global user.email "info@devopseasylearning.com"
-git config --global user.name "ansible"
-git commit -m "Update from jenkins on build ${BUILD_NUMBER}"
-git push 
-
+docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 bash -c " ls -l /root ; \
+		cp -r /helm.sh /dir ; \
+		bash helm.sh
                 '''
             }
         }
