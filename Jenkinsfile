@@ -110,7 +110,7 @@ options {
             steps {
                 sh '''
                 rm -rf SESSION-01-DEVELOPMENT || true 
-                docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 bash -c " ls -l /root ; \
+                docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4.1 bash -c " ls -l /root ; \
 		cp -r /root/* /dir ; \
 		rm -rf SESSION-01-DEVELOPMENT || true ; \
 		bash clone.sh ; \
@@ -163,8 +163,8 @@ service:
 EOF
 
 
-docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 bash -c " ls -l /root ; \
-		cp -r /helm.sh /dir ; \
+docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4.1 bash -c " ls -l /root ; \
+		cp -r /root/*  /dir ; \
 		bash helm.sh"
                 '''
             }
