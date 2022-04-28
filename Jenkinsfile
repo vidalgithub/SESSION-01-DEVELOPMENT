@@ -148,9 +148,7 @@ options {
 
 
 stage('Update helm-charts') {
-    agent { 
-    label 'deploy-main' 
-    }
+
  steps {
      sh '''
 cat <<EOF > values-dev.yaml
