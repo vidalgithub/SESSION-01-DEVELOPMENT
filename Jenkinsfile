@@ -165,7 +165,7 @@ EOF
 
 docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4 bash -c " ls -l /root ; \
 		cp -r /helm.sh /dir ; \
-		bash helm.sh
+		bash helm.sh"
                 '''
             }
         }
