@@ -1,0 +1,9 @@
+sleep 3
+touch cdrick.txt
+ls -l
+
+sleep 3
+useradd king
+cat /etc/passwd |grep  king
+good to go
+sergeo update all you work
