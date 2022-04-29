@@ -44,8 +44,8 @@ pipeline {
                     sh '''
                     sudo rm -rf $WORKSPACE/* 
                     git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
-                    cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
-                    rm -rf  $WORKSPACE/SESSION-01-DEVELOPMENT/webapp/target/webapp.war || true 
+                    cd   SESSION-01-DEVELOPMENT/
+                    rm -rf  webapp/target/webapp.war || true 
                     
 cat <<EOF > sonar-project.properties
 #sonar.login=admin
@@ -75,10 +75,10 @@ EOF
     
                 steps {
                     sh '''
-                  cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
+
                     ls -l 
                     pwd
-                    rm -rf  $WORKSPACE/SESSION-01-DEVELOPMENT/webapp/target/webapp.war || true 
+                    rm -rf  webapp/target/webapp.war || true 
                     mvn clean
                     mvn validate 
                     mvn compile
@@ -88,7 +88,7 @@ EOF
                     mvn install
                     ls -l webapp
                     rm -rf $WORKSPACE/webapp.war || true 
-                    cp -r webapp/target/webapp.war  $WORKSPACE/SESSION-01-DEVELOPMENT/
+                    cp -r webapp/target/webapp.war  .
                     ls -l 
                     pwd 
                     '''
@@ -124,7 +124,7 @@ EOF
       
      steps {
          sh '''
-       cd   $WORKSPACE/SESSION-01-DEVELOPMENT/
+
 rm -rf Dockerfile || true 
  
 cat <<EOF > Dockerfile
