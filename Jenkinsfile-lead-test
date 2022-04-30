@@ -20,12 +20,7 @@ pipeline {
                                     name: 'branch', 
                                     trim: true
                                 ),
-    
-                                string(
-                                    defaultValue: 'tomcat', 
-                                    name: 'ServiceName', 
-                                    trim: true
-                                ),
+
     
                                 choice(
                                     choices: ['9090', '9091','9092', '9093','5050', '5051','7070', '7071'], 
@@ -45,52 +40,6 @@ pipeline {
                     sudo rm -rf $WORKSPACE/* 
                     git clone --branch $branch https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
                     cd   SESSION-01-DEVELOPMENT/
-                    rm -rf  webapp/target/webapp.war || true 
-                    
-cat <<EOF > sonar-project.properties
-#sonar.login=admin
-#sonar.password=admin
-sonar.host.url=https://sonarqube.ektechsoftwaresolution.com/
-sonar.projectKey=maven-project-branch-test
-sonar.projectName=maven-project-branch-test
-sonar.projectVersion=1.0
-sonar.sources=.
-sonar.language=java
-sonar.java.binaries=.
-EOF
-
-                    '''
-                }
-            }
-    
-    
-    
-            stage('Maven works  ') {
-                  agent {
-                docker {
-                  
-                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8'
-                }
-              }
-    
-                steps {
-                    sh '''
-
-                    ls -l 
-                    pwd
-                    rm -rf  webapp/target/webapp.war || true 
-                    mvn clean
-                    mvn validate 
-                    mvn compile
-                    mvn test
-                    mvn package 
-                    mvn verify 
-                    mvn install
-                    ls -l webapp
-                    rm -rf $WORKSPACE/webapp.war || true 
-                    cp -r webapp/target/webapp.war  .
-                    ls -l 
-                    pwd 
                     '''
                 }
             }
@@ -119,58 +68,111 @@ EOF
 
 
 
-           
-    stage('deployement test') {
+stage('Login') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+
+
+        
+    stage('build appserver') {
       
      steps {
          sh '''
-
-rm -rf Dockerfile || true 
- 
-cat <<EOF > Dockerfile
-FROM tomcat:8.0-alpine
-COPY ./webapp.war  /usr/local/tomcat/webapps
-EOF
-
-docker rmi -f $(docker images -aq) || true
-docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
-docker images 
-
-    docker-compose down || true 
-    docker rm -f $ServiceName
-    rm -rf docker-compose.yml || true 
-
-
-cat <<EOF > docker-compose.yml
-    version : "3.3"
-    services:
-      $ServiceName:
-           image: devopseasylearning2021/challenger:${BUILD_NUMBER}
-           expose:
-            - 8080
-           container_name: $ServiceName
-           restart: always
-    
-           ports: 
-            - $port:8080
-    
-EOF
-    
-
-    curl ifconfig.co 
-    docker-compose up -d 
-    docker-compose ps 
-    docker images prune -f  || true
+        cd yelb-appserver
+        docker build -t devopseasylearning2021/challenger:appserver-${BUILD_NUMBER} . 
+        cd -
     
                     '''
                 }
             }
+    
+    
+    stage('build yelb-db') {
+      
+     steps {
+         sh '''
+        cd yelb-db
+        docker build -t devopseasylearning2021/challenger:yelb-db-${BUILD_NUMBER} . 
+        cd -
+    
+                    '''
+                }
+            }
+
+
+     stage('build yelb-ui') {
+      
+     steps {
+         sh '''
+        cd yelb-ui
+        docker build -t devopseasylearning2021/challenger:yelb-ui-${BUILD_NUMBER} . 
+        cd -
+    
+                    '''
+                }
+            }
+       
+
+
     
           
     
         }
     
     
+    stage('bring up application ') {
+              
+                steps {
+                    sh '''
+ rm -rf docker-compose.yml || true
+ cat <<EOF > docker-compose.yml
+version: "3.0"
+services:
+  yelb-ui:
+    image: devopseasylearning2021/challenger:yelb-ui-${BUILD_NUMBER}
+    depends_on:
+      - yelb-appserver
+    ports:
+      - $port:80
+    networks:
+      - yelb-network
+
+  yelb-appserver:
+    image: devopseasylearning2021/challenger:appserver-${BUILD_NUMBER}
+    depends_on:
+      - redis-server
+      - yelb-db
+    networks:
+      - yelb-network
+
+  redis-server:
+    image: redis:4.0.2
+    networks:
+      - yelb-network
+
+  yelb-db:
+    image: devopseasylearning2021/challenger:yelb-db-${BUILD_NUMBER}
+    networks:
+      - yelb-network
+
+
+networks:
+  yelb-network:
+    driver: bridge 
+
+EOF
+
+docker compose up -d 
+
+IP=${curl ifconfig.co}
+
+echo "The project is available at $IP:$port"
+                    '''
+                }
+            }
     
     
     
