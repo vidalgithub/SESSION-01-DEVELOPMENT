@@ -1,5 +1,5 @@
 FROM node:12.22
-MAINTAINER D3vopseasylearning
+MAINTAINER Devopseasylearning
 
 WORKDIR /
 
