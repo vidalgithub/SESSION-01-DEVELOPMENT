@@ -13,57 +13,6 @@ options {
 
     stages {
 
-      stage('setting up ') {
-     
-            steps {
-                sh '''
-               sudo rm -rf SESSION-01-DEVELOPMENT || true
-               git clone -b $BRANCH_NAME  https://github.com/devopseasylearning/SESSION-01-DEVELOPMENT.git
-               cd SESSION-01-DEVELOPMENT
-                '''
-            }
-        }
-
-        
-              stage('Build artifact ') {
-        
-              agent {
-                docker {
-
-                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8'
-                }
-              }
-            steps {
-                sh '''
-                rm -rf webapp/target/webapp.war || true 
-                mvn clean
-                 mvn validate 
-                 mvn compile
-                 mvn test 
-                 mvn package
-                 mvn verify 
-                 mvn install
-
-             
-rm -rf  check.sh || true 
-cat <<EOF > check.sh
-#!/bin/bash
-cp -r  webapp/target/webapp.war . 
-if 
-[[ $? -ne  0  ]]
-then 
-echo "tar file missing"
-exit 1
-fi
-EOF
-
-bash  check.sh
-                
-                
-                '''
-            }
-        }
-
 
 
   stage('SonarQube analysis') {
