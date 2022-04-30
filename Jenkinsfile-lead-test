@@ -120,7 +120,7 @@ stage('Login') {
     
           
     
-        }
+      
     
     
     stage('bring up application ') {
@@ -175,7 +175,7 @@ echo "The project is available at $IP:$port"
             }
     
     
-
+}
 
    post {
    
