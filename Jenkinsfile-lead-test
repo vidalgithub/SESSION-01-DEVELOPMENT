@@ -7,14 +7,6 @@ pipeline {
         timestamps()
       }
        
-       
-        environment {
-		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
-	}
-        
-
-
-
         stages {
     
         stage('Setup parameters') {
@@ -89,7 +81,7 @@ stage('Login') {
       
      steps {
          sh '''
-        cd yelb-appserver
+        cd $WORKSPACE/yelb-appserver
         docker build -t devopseasylearning2021/challenger:appserver-${BUILD_NUMBER} . 
         cd -
     
@@ -102,7 +94,7 @@ stage('Login') {
       
      steps {
          sh '''
-        cd yelb-db
+        cd $WORKSPACE/yelb-db
         docker build -t devopseasylearning2021/challenger:yelb-db-${BUILD_NUMBER} . 
         cd -
     
@@ -115,7 +107,7 @@ stage('Login') {
       
      steps {
          sh '''
-        cd yelb-ui
+        cd $WORKSPACE/yelb-ui
         docker build -t devopseasylearning2021/challenger:yelb-ui-${BUILD_NUMBER} . 
         cd -
     
@@ -128,15 +120,15 @@ stage('Login') {
     
           
     
-      
+     
     
     
-    stage('bring up application ') {
+    stage('bring up application') {
               
                 steps {
-                    sh '''
+sh '''
  rm -rf docker-compose.yml || true
- cat <<EOF > docker-compose.yml
+cat <<EOF > docker-compose.yml
 version: "3.0"
 services:
   yelb-ui:
@@ -178,12 +170,27 @@ docker compose up -d
 IP=${curl ifconfig.co}
 
 echo "The project is available at $IP:$port"
-                    '''
+'''
                 }
             }
     
+
+ stage('check now service in the browser') {
+      
+     steps {
+         sh '''
+        IP=${curl ifconfig.co}
+
+        echo "The project is available at $IP:$port"
+        sleep 300
+                    '''
+                }
+            }
+       
+
+
     
-}
+        }
 
    post {
    
