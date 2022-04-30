@@ -1,5 +1,5 @@
-FROM devopseasylearning2021/challenger:node-12.22 
-MAINTAINER EK TECH SOFTWARE SOLUTION
+FROM node:12.22
+MAINTAINER massimo@it20.info
 
 WORKDIR /
 
@@ -34,7 +34,7 @@ RUN ng build --environment=dev --output-path=./dev/dist/
 
 
 FROM nginx:1.17.10
-MAINTAINER EK TECH SOFTWARE SOLUTION
+MAINTAINER massimo@it20.info
 
 WORKDIR /
 ADD startup.sh startup.sh
@@ -48,4 +48,3 @@ COPY --from=0 /clarity-seed/src/test/dist /clarity-seed/test/dist
 COPY --from=0 /clarity-seed/src/dev/dist /clarity-seed/dev/dist
 
 CMD ["./startup.sh"]
-
