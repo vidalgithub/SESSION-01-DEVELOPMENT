@@ -36,7 +36,7 @@ pipeline {
                         ])
                     }
                 }
-           } }
+           } 
         
     
         stage('cloning repo ') {
@@ -181,24 +181,11 @@ echo "The project is available at $IP:$port"
 '''
                 }
             }
+
+
+}
     
-
- stage('check now service in the browser') {
-      
-     steps {
-         sh '''
-        IP=${curl ifconfig.co}
-
-        echo "The project is available at $IP:$port"
-        sleep 300
-                    '''
-                }
-            }
-       
-
-
-    
-        }
+        
 
    post {
    
