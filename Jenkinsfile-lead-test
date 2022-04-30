@@ -6,7 +6,13 @@ pipeline {
         timeout (time: 30, unit: 'MINUTES')
         timestamps()
       }
-       
+      
+      
+          environment {
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+	}
+     
+     
         stages {
     
         stage('Setup parameters') {
