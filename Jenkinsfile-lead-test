@@ -171,6 +171,8 @@ networks:
 
 EOF
 
+
+cat docker compose 
 docker compose up -d 
 
 IP=${curl ifconfig.co}
