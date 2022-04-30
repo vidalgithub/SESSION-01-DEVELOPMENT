@@ -8,7 +8,9 @@ options {
     timestamps()
   }
 
-   
+   environment {
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+	}
         
 
     stages {
@@ -33,10 +35,56 @@ options {
             }
         }
 
-
-
     
+    stage('Login') {
 
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+
+
+        
+    stage('build appserver') {
+      
+     steps {
+         sh '''
+        cd yelb-appserver
+        docker rm -f devopseasylearning2021/challenger:appserver || true 
+        docker build -t devopseasylearning2021/challenger:appserver . 
+        cd -
+    
+                    '''
+                }
+            }
+    
+    
+    stage('build yelb-db') {
+      
+     steps {
+         sh '''
+        cd yelb-db
+        docker rm -f devopseasylearning2021/challenger:yelb-db || true 
+        docker build -t devopseasylearning2021/challenger:yelb-db . 
+        cd -
+    
+                    '''
+                }
+            }
+
+
+     stage('build yelb-ui') {
+      
+     steps {
+         sh '''
+        cd yelb-appserver
+        docker rm -f devopseasylearning2021/challenger:yelb-ui || true 
+        docker build -t devopseasylearning2021/challenger:yelb-ui . 
+        cd -
+    
+                    '''
+                }
+            }
        
 
       
