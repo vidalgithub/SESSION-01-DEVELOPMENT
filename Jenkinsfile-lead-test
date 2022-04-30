@@ -87,7 +87,7 @@ stage('Login') {
       
      steps {
          sh '''
-        cd $WORKSPACE/yelb-appserver
+        cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-appserver
         docker build -t devopseasylearning2021/challenger:appserver-${BUILD_NUMBER} . 
         cd -
     
@@ -100,7 +100,7 @@ stage('Login') {
       
      steps {
          sh '''
-        cd $WORKSPACE/yelb-db
+        cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-db
         docker build -t devopseasylearning2021/challenger:yelb-db-${BUILD_NUMBER} . 
         cd -
     
@@ -113,7 +113,7 @@ stage('Login') {
       
      steps {
          sh '''
-        cd $WORKSPACE/yelb-ui
+        cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-ui
         docker build -t devopseasylearning2021/challenger:yelb-ui-${BUILD_NUMBER} . 
         cd -
     
