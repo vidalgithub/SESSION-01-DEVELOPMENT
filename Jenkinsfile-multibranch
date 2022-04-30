@@ -77,7 +77,7 @@ options {
       
      steps {
          sh '''
-        cd yelb-appserver
+        cd yelb-ui
         docker rm -f devopseasylearning2021/challenger:yelb-ui || true 
         docker build -t devopseasylearning2021/challenger:yelb-ui . 
         cd -
