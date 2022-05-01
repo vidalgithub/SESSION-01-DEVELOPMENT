@@ -52,35 +52,6 @@ options {
     }
 
         
-        
-      stage('Maven works') {
-              agent {
-                docker {
-                  image 'devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.5'
-	          args '-u 0:0'
-                }
-              }
-            steps {
-                sh '''
-		rm -rf $WORKSPACE/webapp.war || true 
-                mvn clean
-                mvn validate 
-                mvn compile
-                mvn test
-                mvn package 
-                mvn verify 
-                mvn install
-                
-             
-                rm -rf SESSION-01-DEVELOPMENT || true
-		id
-		whoami
-                cp -r /root/push.sh . || true 
-		
-		bash push.sh 
-                '''
-            }
-        }
 
 
 
@@ -105,71 +76,93 @@ options {
 
     
       
-       stage('build images') {
 
-            steps {
-                sh '''
-                rm -rf SESSION-01-DEVELOPMENT || true 
-                docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4.4 bash -c " ls -l /root ; \
-		cp -r /root/* /dir ; \
-		rm -rf SESSION-01-DEVELOPMENT || true ; \
-		bash clone.sh ; \
-		rm -rf push.sh clone.sh"
-                ls -l 
-                
-                cd SESSION-01-DEVELOPMENT 
-               
-                docker build -t devopseasylearning2021/challenger:${BUILD_NUMBER} .
-                docker images 
-
-                '''
-            }
-        }
-
-
-		stage('Login') {
+    stage('Login') {
 
 			steps {
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 			}
 		}
 
-		stage('Push') {
 
-			steps {
-				sh 'docker push devopseasylearning2021/challenger:${BUILD_NUMBER}'
-			}
-		}
-	
+        
+    // stage('build appserver') {
+      
+    //  steps {
+    //      sh '''
+    //     cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-appserver
+    //     docker build -t devopseasylearning2021/challenger-appserver:${BUILD_NUMBER} . 
+    //     cd -
+    
+    //                 '''
+    //             }
+    //         }
+    
+    
+    stage('build yelb-db') {
+      
+     steps {
+         sh '''
+        cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-db
+        docker build -t devopseasylearning2021/challenger-db:${BUILD_NUMBER} . 
+        cd -
+    
+                    '''
+                }
+            }
 
 
+     stage('build yelb-ui') {
+      
+     steps {
+         sh '''
+        cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-ui
+        docker build -t devopseasylearning2021/challenger-ui:${BUILD_NUMBER} . 
+        cd -
+    
+                    '''
+                }
+            }
+       
 
+     stage('build redis') {
+      
+     steps {
+         sh '''
+        cd $WORKSPACE/SESSION-01-DEVELOPMENT/redis
+        docker build -t devopseasylearning2021/challenger-redis:${BUILD_NUMBER} . 
+        cd -
+    
+                    '''
+                }
+            }
+       
 
-
-
-stage('Update helm-charts') {
+    
+    stage('Update helm-charts') {
 
  steps {
      sh '''
-cat <<EOF > values-dev.yaml
+
+rm -rf ./*   
+
+rm -rf values_dev.yaml || true
+cat <<EOF > values_dev.yaml
 replicaCount: 1
-image:
-  repository: devopseasylearning2021
-  pullPolicy: Always
-  tag: ${BUILD_NUMBER}
-service:
-  type: LoadBalancer
-  port: 8080
+tag:
+    ui: ${BUILD_NUMBER}
+    redis: ${BUILD_NUMBER}
+    db: ${BUILD_NUMBER}
+    appserver: ${BUILD_NUMBER}
 EOF
 
-
-docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.4.4 bash -c " ls -l /root ; \
+ rm -rf SESSION-01-DEVELOPMENT || true 
+docker run -i --rm -v $PWD:/dir -w /dir  devopseasylearning2021/s1-project02:maven-3.8.4-openjdk-8.5.1 bash -c " ls -l /root ; \
 		cp -r /root/*  /dir ; \
 		bash helm.sh"
                 '''
             }
         }
-
 
 
 
