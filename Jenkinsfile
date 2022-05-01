@@ -24,9 +24,36 @@ options {
                 script {
                     properties([
                         parameters([
+                        
+                        choice(
+                                    choices: ['Yes', 'No'], 
+                                    name: 'deployUI'
+                                ),
+                        
+                        choice(
+                                    choices: ['Yes', 'No'], 
+                                    name: 'deployDB'
+                                ),
+
+                        choice(
+                                    choices: ['Yes', 'No'], 
+                                    name: 'deployREDIS'
+                                ),
+
+
+                        choice(
+                                    choices: ['Yes', 'No'], 
+                                    name: 'deployAPPSERVER'
+                                ),
+
+
+
+
                              string(name: 'WARNTIME',
                              defaultValue: '2',
                             description: '''Warning time (in minutes) before starting upgrade'''),
+
+                             
                          
                           string(
                                 defaultValue: 'develop',
@@ -86,24 +113,54 @@ options {
 
 
         
-    // stage('build appserver') {
-      
-    //  steps {
-    //      sh '''
-    //     cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-appserver
-    //     docker build -t devopseasylearning2021/challenger-appserver:${BUILD_NUMBER} . 
-    //     cd -
-    
-    //                 '''
-    //             }
-    //         }
-    
-    
-    stage('build yelb-db') {
+    stage('build appserver') {
+      when{ 
+          
+          expression {
+            env.deployAPPSERVER == 'Yes' }
+          
+            }
       
      steps {
          sh '''
-        cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-db
+         
+        docker pull devopseasylearning2021/challenger:appserver
+        docker tag devopseasylearning2021/challenger:appserver devopseasylearning2021/challenger-appserver:${BUILD_NUMBER}
+    
+                    '''
+                }
+            }
+    
+    
+      stage('pushing appserver ') {
+        when{ 
+          
+          expression {
+            env.deployAPPSERVER == 'Yes' }
+          
+            }
+      
+     steps {
+         sh '''
+        docker push devopseasylearning2021/challenger-appserver:${BUILD_NUMBER}
+    
+                    '''
+                }
+            }
+
+
+
+    stage('build yelb-db') {
+      when{ 
+          
+          expression {
+            env.deployDB == 'Yes' }
+          
+            }
+      
+     steps {
+         sh '''
+        cd  yelb-db
         docker build -t devopseasylearning2021/challenger-db:${BUILD_NUMBER} . 
         cd -
     
@@ -112,24 +169,74 @@ options {
             }
 
 
-     stage('build yelb-ui') {
+       stage('pushing db ') {
+         when{ 
+          
+          expression {
+            env.deployDB == 'Yes' }
+          
+            }
       
      steps {
          sh '''
-        cd $WORKSPACE/SESSION-01-DEVELOPMENT/yelb-ui
-        docker build -t devopseasylearning2021/challenger-ui:${BUILD_NUMBER} . 
-        cd -
+        docker push devopseasylearning2021/challenger-db:${BUILD_NUMBER}
     
                     '''
                 }
             }
-       
 
+
+
+
+    //  stage('build yelb-ui') {
+      // when{ 
+          
+      //     expression {
+      //       env.deployUI == 'Yes' }
+          
+      //       }
+      
+    //  steps {
+    //      sh '''
+    //     cd  yelb-ui
+    //     docker build -t devopseasylearning2021/challenger-ui:${BUILD_NUMBER} . 
+    //     cd -
+    
+    //                 '''
+    //             }
+    //         }
+       
+    //   stage('pushing ui ') {
+      // when{ 
+          
+      //     expression {
+      //       env.deployUI == 'Yes' }
+          
+      //       }
+      
+    //  steps {
+    //      sh '''
+    //     docker push devopseasylearning2021/challenger-ui:${BUILD_NUMBER}
+    
+    //                 '''
+    //             }
+    //         }
+
+     
+
+
+     
      stage('build redis') {
+       when{ 
+          
+          expression {
+            env.deployREDIS == 'Yes' }
+          
+            }
       
      steps {
          sh '''
-        cd $WORKSPACE/SESSION-01-DEVELOPMENT/redis
+        cd  redis
         docker build -t devopseasylearning2021/challenger-redis:${BUILD_NUMBER} . 
         cd -
     
@@ -137,6 +244,23 @@ options {
                 }
             }
        
+ 
+    stage('pushing redis ') {
+        when{ 
+          
+          expression {
+            env.deployREDIS == 'Yes' }
+          
+            }
+      
+     steps {
+         sh '''
+        docker push devopseasylearning2021/challenger-redis:${BUILD_NUMBER}
+    
+                    '''
+                }
+            }
+
 
     
     stage('Update helm-charts') {
@@ -216,31 +340,3 @@ def notifyUpgrade(String buildResult, String whereAt) {
               message: "Challenger: Upgrade was not successful. Please investigate it immediately.  @ ${env.BUILD_URL}  Application CHALLENGER")
   }
 }
-
-    
-      
-      
-      
-      
-     
-     
-      
-      
-     
-      
-      
-      
-      
-      
-      
-      
-
-      
-      
-      
-      
-      
-      
-      
-      
-       
