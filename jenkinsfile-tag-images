@@ -1,0 +1,329 @@
+
+
+
+pipeline {
+agent any
+
+options {
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    disableConcurrentBuilds()
+    timeout (time: 60, unit: 'MINUTES')
+    timestamps()
+  }
+
+  environment {
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+	}
+
+
+   
+    stages {
+
+        stage('Setup parameters') {
+            steps {
+                script {
+                    properties([
+                        parameters([
+                        
+                         choice(
+                                    choices: ['Geradine', 'Peter','Noel', 'Arnaud','stephanie', 'Steph','Sinclair', 'Kelly'], 
+                                    name: 'TeamName'
+                                ),
+
+                          choice(
+                                    choices: ['challengerUI', 'challengerDB','Noel', 'challengerREDIS','stephanie', 'challengerAPPSERVER','All'], 
+                                    name: 'ApplicationToDeploy'
+                                ),
+
+
+                          string(
+                                defaultValue: '496',
+                                name: 'challengerUI',
+                                trim: true
+                            ),
+
+                          string(
+                                defaultValue: '496',
+                                name: 'TagchallengerDB',
+                                trim: true
+                            ),
+
+                            string(
+                                defaultValue: '496',
+                                name: 'TagchallengerREDIS',
+                                trim: true
+                            ),
+
+                            string(
+                                defaultValue: '496',
+                                name: 'TagchallengerAPPSERVER',
+                                trim: true
+                            ),
+                            
+
+                            string(
+                                defaultValue: '496',
+                                name: 'TagAll',
+                                trim: true
+                            ),
+                            
+
+                        ])
+                    ])
+                }
+            }
+        }
+ 
+      
+      
+    //////////////////////////////////
+       stage('warning') {
+      steps {
+        script {
+            notifyUpgrade(currentBuild.currentResult, "WARNING")
+            sleep(time:env.WARNTIME, unit:"MINUTES")
+        }
+      }
+    }
+
+      
+    stage('Login') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+
+
+        
+    stage('build appserver') {
+      when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'challengerAPPSERVER' }
+          
+            }
+      
+     steps {
+         sh '''
+         
+        docker pull devopseasylearning2021/challenger:appserver
+        docker tag devopseasylearning2021/challenger:appserver devopseasylearning2021/challenger-appserver:$TeamName-$TagchallengerAPPSERVER
+    
+                    '''
+                }
+            }
+    
+    
+      stage('pushing appserver ') {
+        when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'challengerAPPSERVER' }
+          
+            }
+      
+     steps {
+         sh '''
+        docker push devopseasylearning2021/challenger-appserver:$TeamName-$TagchallengerAPPSERVER
+    
+                    '''
+                }
+            }
+
+
+
+    stage('build yelb-db') {
+      when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'challengerDB' }
+          
+            }
+      
+     steps {
+         sh '''
+        cd  yelb-db
+        docker build -t devopseasylearning2021/challenger-db:$TeamName-$TagchallengerDB . 
+        cd -
+    
+                    '''
+                }
+            }
+
+
+       stage('pushing db ') {
+         when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'challengerDB' }
+          
+            }
+      
+     steps {
+         sh '''
+        docker push devopseasylearning2021/challenger-db:$TeamName-$TagchallengerDB
+    
+                    '''
+                }
+            }
+
+
+
+
+    //  stage('build yelb-ui') {
+      // when{ 
+          
+      //     expression {
+      //       env.ApplicationToDeploy == 'challengerUI' }
+          
+      //       }
+      
+    //  steps {
+    //      sh '''
+    //     cd  yelb-ui
+    //     docker build -t devopseasylearning2021/challenger-ui:$TeamName-$TagchallengerUI . 
+    //     cd -
+    
+    //                 '''
+    //             }
+    //         }
+       
+    //   stage('pushing ui ') {
+      // when{ 
+          
+      //     expression {
+      //       env.ApplicationToDeploy == 'challengerUI' }
+          
+      //       }
+      
+    //  steps {
+    //      sh '''
+    //     docker push devopseasylearning2021/challenger-ui:$TeamName-$TagchallengerUI
+    
+    //                 '''
+    //             }
+    //         }
+
+     
+
+
+     
+     stage('build redis') {
+       when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'challengerREDIS' }
+          
+            }
+      
+     steps {
+         sh '''
+        cd  redis
+        docker build -t devopseasylearning2021/challenger-redis:$TeamName-$TagchallengerREDIS . 
+        cd -
+    
+                    '''
+                }
+            }
+       
+ 
+    stage('pushing redis ') {
+        when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'challengerREDIS' }
+          
+            }
+      
+     steps {
+         sh '''
+        docker push devopseasylearning2021/challenger-redis:$TeamName-$TagchallengerREDIS
+    
+                    '''
+                }
+            }
+
+
+    
+
+    stage('build ALL') {
+       when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'All' }
+          
+            }
+      
+     steps {
+         sh '''
+        docker pull devopseasylearning2021/challenger:appserver
+        docker tag devopseasylearning2021/challenger:appserver devopseasylearning2021/challenger-appserver:$TeamName-$TeamName-$TagAll
+
+        cd  yelb-db
+        docker build -t devopseasylearning2021/challenger-db:$TeamName-$TagAll . 
+        cd -
+        
+        cd  redis
+        docker build -t devopseasylearning2021/challenger-redis:$$TeamName-$TagAll . 
+        cd -
+
+
+        cd  yelb-ui
+       docker build -t devopseasylearning2021/challenger-ui:$TeamName-$TagAll . 
+       cd -
+
+                    '''
+                }
+            }
+       
+ 
+    stage('pushing ALL ') {
+        when{ 
+          
+          expression {
+            env.ApplicationToDeploy == 'All' }
+          
+            }
+      
+     steps {
+         sh '''
+         docker push devopseasylearning2021/challenger-appserver:$TeamName-$TagAll
+          docker push devopseasylearning2021/challenger-db:$TeamName-$TagAll
+         docker push devopseasylearning2021/challenger-ui:$TeamName-$TagAll
+        docker push devopseasylearning2021/challenger-redis:$TeamName-$TagAll
+    
+                    '''
+                }
+            }
+
+
+
+
+
+    }
+
+
+   post {
+
+   success {
+      slackSend (channel: '#development-alerts', color: 'good', message: "SUCCESSFUL: A new image have been made ready for testing team from Dev team, by $TeamName Branch name  <<${env.BRANCH_NAME}>>  on job Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+ 
+    unstable {
+      slackSend (channel: '#development-alerts', color: 'warning', message: "UNSTABLE:  Branch name  <<${env.BRANCH_NAME}>>  Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+    failure {
+      slackSend (channel: '#development-alerts', color: '#FF0000', message: "FAILURE:  Branch name  <<${env.BRANCH_NAME}>> Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+   
+    cleanup {
+      deleteDir()
+    }
+}
+
+
+}
+
+
+
