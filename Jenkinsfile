@@ -28,22 +28,26 @@ options {
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployUI'
+                                    defaultValue: Yes
                                 ),
                         
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployDB'
+                                    defaultValue: Yes
                                 ),
 
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployREDIS'
+                                    defaultValue: Yes
                                 ),
 
 
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployAPPSERVER'
+                                    defaultValue: Yes
                                 ),
 
 
@@ -225,7 +229,7 @@ options {
      
 
 
-     
+
      stage('build redis') {
        when{ 
           
@@ -340,3 +344,31 @@ def notifyUpgrade(String buildResult, String whereAt) {
               message: "Challenger: Upgrade was not successful. Please investigate it immediately.  @ ${env.BUILD_URL}  Application CHALLENGER")
   }
 }
+
+    
+      
+      
+      
+      
+     
+     
+      
+      
+     
+      
+      
+      
+      
+      
+      
+      
+
+      
+      
+      
+      
+      
+      
+      
+      
+       
