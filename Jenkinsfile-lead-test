@@ -32,6 +32,18 @@ pipeline {
                                     choices: ['9090', '9091','9092', '9093','5050', '5051','7070', '7071'], 
                                     name: 'port'
                                 ),
+				string(name: 'WARNTIME',
+                             defaultValue: '5',
+                            description: '''Warning time (in minutes) before starting upgrade'''),
+
+
+
+				string(
+                                defaultValue: 'develop',
+                                name: 'Please_leave_this_section_as_it_is',
+                                trim: true
+                            ),
+			    
                             ])
                         ])
                     }
@@ -175,7 +187,7 @@ EOF
 cat docker-compose.yml
 docker compose up -d 
 
-IP=${curl ifconfig.co}
+IP=$(curl ifconfig.co)
 
 echo "The project is available at $IP:$port"
 '''
@@ -183,37 +195,72 @@ echo "The project is available at $IP:$port"
             }
 
 
+
+ //////////////////////////////////
+       stage('warning') {
+      steps {
+        script {
+            notifyUpgrade(currentBuild.currentResult, "WARNING")
+            sleep(time:env.WARNTIME, unit:"MINUTES")
+        }
+      }
+    }
+
+
+
+
 }
     
         
-
-   post {
-   
-   success {
-      slackSend (channel: '#development-alerts', color: 'good', message: "SUCCESSFUL:  Branch name  <<${env.BRANCH_NAME}>>  on job Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+ post {
+    always {
+      script {
+        notifyUpgrade(currentBuild.currentResult, "POST")
+      }
     }
+    
+  }
 
+
+    
+    }
+    
+    
+    
+        
+    
+
+def notifyUpgrade(String buildResult, String whereAt) {
+  if (Please_leave_this_section_as_it_is == 'origin/develop') {
+    channel = 'development-alerts'
+  } else {
+    channel = 'development-alerts'
+  }
+  if (buildResult == "SUCCESS") {
+    switch(whereAt) {
+      case 'WARNING':
+        slackSend(channel: channel,
+                color: "#439FE0",
+                message: "Challenger: APPLICATION AVAILABLE ON THE BROWSER FOR THE NEXT in ${env.WARNTIME} minutes @ ${env.BUILD_URL} , check console output for the IP address")
+        break
+    case 'STARTING':
+      slackSend(channel: channel,
+                color: "good",
+                message: "Challenger: END OF APPLCIATION AVAILABILITY")
+      break
+    default:
+        slackSend(channel: channel,
+                color: "good",
+                message: "Challenger: DEPLOYMENT TEST completed successfully @ ${env.BUILD_URL}  Application CHALLENGER")
+        break
+    }
+  } else {
+    slackSend(channel: channel,
+              color: "danger",
+              message: "Challenger: DEPLOYMENT TEST was not successful. Please investigate it immediately.  @ ${env.BUILD_URL}  Application CHALLENGER")
+  }
+}
+
+    
  
-    unstable {
-      slackSend (channel: '#development-alerts', color: 'warning', message: "UNSTABLE:  Branch name  <<${env.BRANCH_NAME}>>  Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-    }
-
-    failure {
-      slackSend (channel: '#development-alerts', color: '#FF0000', message: "FAILURE:  Branch name  <<${env.BRANCH_NAME}>> Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-    }
-   
-    cleanup {
-      deleteDir()
-    }
-}
-
-
-
-    
-    }
-    
-    
-    
-        
-     
     
