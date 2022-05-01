@@ -255,13 +255,13 @@ options {
         cd -
         
         cd  redis
-        docker build -t devopseasylearning2021/challenger-redis:$$TeamName-$TagAll . 
+        docker build -t devopseasylearning2021/challenger-redis:$TeamName-$TagAll . 
         cd -
 
 
-        cd  yelb-ui
-       docker build -t devopseasylearning2021/challenger-ui:$TeamName-$TagAll . 
-       cd -
+    //    cd  yelb-ui
+    //   docker build -t devopseasylearning2021/challenger-ui:$TeamName-$TagAll . 
+    //   cd -
 
                     '''
                 }
@@ -280,7 +280,7 @@ options {
          sh '''
          docker push devopseasylearning2021/challenger-appserver:$TeamName-$TagAll
           docker push devopseasylearning2021/challenger-db:$TeamName-$TagAll
-         docker push devopseasylearning2021/challenger-ui:$TeamName-$TagAll
+      //   docker push devopseasylearning2021/challenger-ui:$TeamName-$TagAll
         docker push devopseasylearning2021/challenger-redis:$TeamName-$TagAll
     
                     '''
