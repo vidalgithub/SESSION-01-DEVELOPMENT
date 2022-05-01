@@ -1,0 +1,123 @@
+pipeline {
+agent any
+
+options {
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    disableConcurrentBuilds()
+    timeout (time: 60, unit: 'MINUTES')
+    timestamps()
+  }
+
+   environment {
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+	}
+        
+
+    stages {
+
+
+
+  stage('SonarQube analysis') {
+            agent {
+                docker {
+
+                  image 'sonarsource/sonar-scanner-cli:4.7.0'
+                }
+               }
+               environment {
+        CI = 'true'
+        scannerHome='/opt/sonar-scanner'
+    }
+            steps{
+                withSonarQubeEnv('Sonar') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+
+    
+    stage('Login') {
+
+			steps {
+				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			}
+		}
+
+
+        
+    stage('build appserver') {
+      
+     steps {
+         sh '''
+        cd yelb-appserver
+        docker rm -f devopseasylearning2021/challenger:appserver || true 
+        docker build -t devopseasylearning2021/challenger:appserver . 
+        cd -
+    
+                    '''
+                }
+            }
+    
+    
+    stage('build yelb-db') {
+      
+     steps {
+         sh '''
+        cd yelb-db
+        docker rm -f devopseasylearning2021/challenger:yelb-db || true 
+        docker build -t devopseasylearning2021/challenger:yelb-db . 
+        cd -
+    
+                    '''
+                }
+            }
+
+
+     stage('build yelb-ui') {
+      
+     steps {
+         sh '''
+        cd yelb-ui
+        docker rm -f devopseasylearning2021/challenger:yelb-ui || true 
+        docker build -t devopseasylearning2021/challenger:yelb-ui . 
+        cd -
+    
+                    '''
+                }
+            }
+       
+
+      
+
+    }
+
+
+   post {
+   
+   success {
+      slackSend (channel: '#development-alerts', color: 'good', message: "SUCCESSFUL:  Branch name  <<${env.BRANCH_NAME}>>  Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+
+ 
+    unstable {
+      slackSend (channel: '#development-alerts', color: 'warning', message: "UNSTABLE:  Branch name  <<${env.BRANCH_NAME}>>  Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+
+    failure {
+      slackSend (channel: '#development-alerts', color: '#FF0000', message: "FAILURE:  Branch name  <<${env.BRANCH_NAME}>> Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+   
+    cleanup {
+      deleteDir()
+    }
+}
+
+
+
+
+}
+
+
+
+    
+ 
