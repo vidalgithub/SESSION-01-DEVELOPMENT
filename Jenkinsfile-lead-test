@@ -191,6 +191,8 @@ docker-compose ps
 IP=$(curl ifconfig.co)
 
 echo "The project is available at $IP:$port"
+
+curl $IP:$port
 '''
                 }
             }
