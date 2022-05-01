@@ -28,26 +28,26 @@ options {
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployUI'
-                                    defaultValue: Yes
+                                 
                                 ),
                         
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployDB'
-                                    defaultValue: Yes
+                             
                                 ),
 
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployREDIS'
-                                    defaultValue: Yes
+                           
                                 ),
 
 
                         choice(
                                     choices: ['Yes', 'No'], 
                                     name: 'deployAPPSERVER'
-                                    defaultValue: Yes
+                    
                                 ),
 
 
