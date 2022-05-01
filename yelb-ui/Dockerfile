@@ -1,5 +1,5 @@
 FROM node:12.22
-MAINTAINER massimo@it20.info
+MAINTAINER Devopseasylearning
 
 WORKDIR /
 
@@ -34,7 +34,7 @@ RUN ng build --environment=dev --output-path=./dev/dist/
 
 
 FROM nginx:1.17.10
-MAINTAINER massimo@it20.info
+MAINTAINER Devopseasylearning
 
 WORKDIR /
 ADD startup.sh startup.sh
