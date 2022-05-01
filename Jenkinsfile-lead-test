@@ -159,7 +159,7 @@ services:
       - yelb-network
 
   yelb-appserver:
-    image: devopseasylearning2021/challenger:appserver-${BUILD_NUMBER}
+    image: devopseasylearning2021/challenger:appserver
     depends_on:
       - redis-server
       - yelb-db
@@ -186,7 +186,8 @@ EOF
 
 cat docker-compose.yml
 docker compose up -d 
-
+sleep 5
+docker-compose ps 
 IP=$(curl ifconfig.co)
 
 echo "The project is available at $IP:$port"
