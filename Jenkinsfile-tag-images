@@ -162,12 +162,12 @@ options {
 
 
     //  stage('build yelb-ui') {
-      // when{ 
+    //   when{ 
           
-      //     expression {
-      //       env.ApplicationToDeploy == 'challengerUI' }
+    //       expression {
+    //         env.ApplicationToDeploy == 'challengerUI' }
           
-      //       }
+    //         }
       
     //  steps {
     //      sh '''
@@ -180,12 +180,12 @@ options {
     //         }
        
     //   stage('pushing ui ') {
-      // when{ 
+    //   when{ 
           
-      //     expression {
-      //       env.ApplicationToDeploy == 'challengerUI' }
+    //       expression {
+    //         env.ApplicationToDeploy == 'challengerUI' }
           
-      //       }
+    //         }
       
     //  steps {
     //      sh '''
@@ -259,9 +259,9 @@ options {
         cd -
 
 
-    //    cd  yelb-ui
-    //   docker build -t devopseasylearning2021/challenger-ui:$TeamName-$TagAll . 
-    //   cd -
+      //  cd  yelb-ui
+      // docker build -t devopseasylearning2021/challenger-ui:$TeamName-$TagAll . 
+      // cd -
 
                     '''
                 }
@@ -280,7 +280,7 @@ options {
          sh '''
          docker push devopseasylearning2021/challenger-appserver:$TeamName-$TagAll
           docker push devopseasylearning2021/challenger-db:$TeamName-$TagAll
-      //   docker push devopseasylearning2021/challenger-ui:$TeamName-$TagAll
+        // docker push devopseasylearning2021/challenger-ui:$TeamName-$TagAll
         docker push devopseasylearning2021/challenger-redis:$TeamName-$TagAll
     
                     '''
