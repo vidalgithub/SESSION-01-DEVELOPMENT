@@ -31,7 +31,7 @@ options {
                                 ),
 
                           choice(
-                                    choices: ['challengerUI', 'challengerDB','Noel', 'challengerREDIS','stephanie', 'challengerAPPSERVER','All'], 
+                                    choices: ['challengerUI', 'challengerDB', 'challengerREDIS', 'challengerAPPSERVER', 'All'], 
                                     name: 'ApplicationToDeploy'
                                 ),
 
