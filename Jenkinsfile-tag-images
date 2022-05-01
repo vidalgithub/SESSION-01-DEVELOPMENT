@@ -297,7 +297,7 @@ options {
    post {
 
    success {
-      slackSend (channel: '#development-alerts', color: 'good', message: "SUCCESSFUL: A new CHALLENGER APP image(s) have been made ready for testing team from Dev team, by $TeamName")
+      slackSend (channel: '#development-alerts', color: 'good', message: "SUCCESSFUL: A new image(s) have been made ready\n APPLICATION: Challenger\n  ORIGIN TEAM: Dev\n DESTINATION TEAM: Testing team\n CERTIFY BY: $TeamName")
     }
  
     unstable {
