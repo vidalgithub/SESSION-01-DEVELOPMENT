@@ -26,7 +26,7 @@ options {
                         parameters([
                         
                         choice(
-                                    choices: ['Yes', 'No'], 
+                                    choices: ['No', 'Yes'], 
                                     name: 'deployUI'
                                  
                                 ),
