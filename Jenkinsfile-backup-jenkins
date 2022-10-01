@@ -14,9 +14,10 @@ pipeline {
          rm -rf ./*
          mkdir "JENKINS-BACKUP-${DATE}"
          
-         cp -r $JENKINS_HOME/jobs/SESSION01 "JENKINS-BACKUP-${DATE}"
-         tar -zcvf "JENKINS-BACKUP-${DATE}".tar.gz "JENKINS-BACKUP-${DATE}" 1> /dev/null
-        rm -rf "JENKINS-BACKUP-${DATE}" 
+          $JENKINS_HOME/jobs/SESSION01 "JENKINS-BACKUP-${DATE}"
+         tar -zcvf "JENKINS-BACKUP-${DATE}".tar.gz  $JENKINS_HOME/jobs/SESSION01    1> /dev/null
+         mkdir "JENKINS-BACKUP-${DATE}" 
+         mv "JENKINS-BACKUP-${DATE}".tar.gz "JENKINS-BACKUP-${DATE}" 
                 '''
          
             }
@@ -31,7 +32,7 @@ pipeline {
         docker run -i -v $PWD:/backup -w /backup devopseasylearning2021/canary:jenkins-backup \
          bash -c "pwd ; \
          ls -l ; \
-         aws s3 cp JENKINS-BACKUP-* s3://$BUCKET_NAME/  --recursive "
+         aws s3 cp "JENKINS-BACKUP-${DATE}"  s3://$BUCKET_NAME/  --recursive "
                 '''
          
             }
