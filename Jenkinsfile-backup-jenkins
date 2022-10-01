@@ -29,8 +29,7 @@ pipeline {
         DATE=`date '+%F'`
         BUCKET_NAME=ekteck-jenkins-backup
         docker run -i -v $PWD:/backup -w /backup devopseasylearning2021/canary:jenkins-backup \
-         bash -c " aws s3 cp recursive "JENKINS-BACKUP-${DATE}".tar.gz s3://$BUCKET_NAME/  \
-         --recursive --exclude="*" --exclude="*/*/*" --include="*.zip" "
+         bash -c " aws s3 cp /backup/"JENKINS-BACKUP-${DATE}".tar.gz s3://$BUCKET_NAME/  --recursive "
                 '''
          
             }
