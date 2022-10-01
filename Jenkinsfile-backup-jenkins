@@ -15,7 +15,7 @@ pipeline {
 
          
 
-         tar -zcvf "JENKINS-BACKUP-${DATE}".tar.gz  $JENKINS_HOME/jobs/SESSION01    1> /dev/null
+         tar -zcvf "JENKINS-BACKUP-${DATE}".tar.gz  $JENKINS_HOME   
          mkdir "JENKINS-BACKUP-${DATE}" 
          mv "JENKINS-BACKUP-${DATE}".tar.gz "JENKINS-BACKUP-${DATE}" 
                 '''
