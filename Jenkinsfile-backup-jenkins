@@ -4,11 +4,12 @@ pipeline {
          }
 
     stages {
-        stage('Hello') {
+        stage('backup') {
             steps {
                 sh '''
          #!/bin/bash 
          DATE=`date '+%F_%H'`
+         BUCKET_NAME=ekteck-jenkins-backup
          ####### copy backup"
          rm -rf "JENKINS-BACKUP-${DATE}" || true
          mkdir "JENKINS-BACKUP-${DATE}"
@@ -17,6 +18,19 @@ pipeline {
          tar -zcvf "JENKINS-BACKUP-${DATE}".tar.gz "JENKINS-BACKUP-${DATE}"
          ls -l 
                 '''
+         
+            }
+        }   
+
+
+        stage('update s3') {
+            steps {
+                sh '''
+        docker run -i -v $PWD:/backup -w /backup devopseasylearning2021/canary:jenkins-backup \
+         bash -c "ls -la ; \
+         aws s3 ls"
+                '''
+         
             }
         }
     }
