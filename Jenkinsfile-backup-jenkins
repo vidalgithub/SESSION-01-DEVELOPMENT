@@ -7,8 +7,14 @@ pipeline {
         stage('Hello') {
             steps {
                 sh '''
-               echo  $JENKINS_HOME/job/SESSION01
-               du -sh $JENKINS_HOME/workspace
+         #!/bin/bash 
+         DATE=`date '+%F_%H'`
+         ####### copy backup"
+         mkdir "JENKINS-BACKUP-${DATE}"
+         
+         cp -r $JENKINS_HOME/job/SESSION01 "JENKINS-BACKUP-${DATE}
+         tar -zcvf "JENKINS-BACKUP-${DATE}".tar.gz "JENKINS-BACKUP-${DATE}"
+         ls -l 
                 '''
             }
         }
