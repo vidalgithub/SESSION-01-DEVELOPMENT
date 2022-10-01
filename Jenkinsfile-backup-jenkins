@@ -26,6 +26,7 @@ pipeline {
         stage('update s3') {
             steps {
                 sh '''
+        DATE=`date '+%F_%H'`
         BUCKET_NAME=ekteck-jenkins-backup
         docker run -i -v $PWD:/backup -w /backup devopseasylearning2021/canary:jenkins-backup \
          bash -c " aws s3 cp "JENKINS-BACKUP-${DATE}".tar.gz s3://$BUCKET_NAME/ --recursive"
