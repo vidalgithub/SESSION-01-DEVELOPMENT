@@ -1,0 +1,18 @@
+pipeline {
+    agent { 
+        label 'no-no-no-build-never-ner-ner'
+         }
+
+    stages {
+        stage('Hello') {
+            steps {
+                sh '''
+               echo  $JENKINS_HOME/job/SESSION01
+               du -sh $JENKINS_HOME/workspace
+                '''
+            }
+        }
+    }
+}
+
+
