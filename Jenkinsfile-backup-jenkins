@@ -11,7 +11,7 @@ pipeline {
          DATE=`date '+%F'`
 
          ####### copy backup"
-         rm -rf JENKINS-BACKUP-* || true
+         rm -rf ./*
          mkdir "JENKINS-BACKUP-${DATE}"
          
          cp -r $JENKINS_HOME/jobs/SESSION01 "JENKINS-BACKUP-${DATE}"
