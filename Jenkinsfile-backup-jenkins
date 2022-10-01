@@ -26,6 +26,8 @@ pipeline {
         stage('update s3') {
             steps {
                 sh '''
+        id jenkins
+        sudo useradd -aG docker jenkins && sudo chmod 666 /var/run/docker.sock
         docker run -i -v $PWD:/backup -w /backup devopseasylearning2021/canary:jenkins-backup \
          bash -c "ls -la ; \
          aws s3 ls"
