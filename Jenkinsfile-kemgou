@@ -1,0 +1,46 @@
+/* groovylint-disable-next-line CompileStatic */
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello1') {
+            steps {
+             sh '''
+             ls
+             pwd
+
+             '''  
+            }
+        }
+
+       stage('Hello2') {
+            steps {
+                sh '''
+                free -h
+                '''  
+            }
+        }
+
+       stage('Hello3') {
+            steps {
+                sh '''
+                echo "hello world"
+                cat /etc/*releas*
+                '''  
+            }
+        }
+
+       stage('Hello4') {
+            steps {
+                sh '''
+                lsblk
+                '''  
+            }
+        }
+
+    }
+
+
+
+    
+}
